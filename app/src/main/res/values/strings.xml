@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="fragment_text">this is my list fragment</string>
+
+    <!-- settings-related -->
+    <string name="action_settings">Settings</string>
+    <string name="pref_sort_order_label">Sort Order</string>
+    <string name="pref_sort_order_key" translatable="false">orderByReplaceMe</string>
+    <string name="pref_sort_order_most_popular">most_popular</string>
+
+</resources>
