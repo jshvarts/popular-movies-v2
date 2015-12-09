@@ -2,11 +2,11 @@
 <resources>
     <string-array name="sort_by_name_array">
         <item>Most Popular</item>
-        <item>Highest-rated</item>
+        <item>Highest Rated</item>
     </string-array>
 
     <string-array name="sort_by_value_array">
-        <item>most_popular</item>
-        <item>highest_rated</item>
+        <item>@string/pref_sort_by_most_popular</item>
+        <item>@string/pref_sort_by_vote_average</item>
     </string-array>
 </resources>
