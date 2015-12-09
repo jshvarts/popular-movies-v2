@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="sort_order_name_array">
+    <string-array name="sort_by_name_array">
         <item>Most Popular</item>
         <item>Highest-rated</item>
     </string-array>
 
-    <string-array name="sort_order_value_array">
+    <string-array name="sort_by_value_array">
         <item>most_popular</item>
         <item>highest_rated</item>
     </string-array>
