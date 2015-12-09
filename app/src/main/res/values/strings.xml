@@ -5,8 +5,8 @@
 
     <!-- settings-related -->
     <string name="action_settings">Settings</string>
-    <string name="pref_sort_order_label">Sort Order</string>
-    <string name="pref_sort_order_key" translatable="false">orderByReplaceMe</string>
-    <string name="pref_sort_order_most_popular">most_popular</string>
+    <string name="pref_sort_by_label">Sort By</string>
+    <string name="pref_sort_by_key" translatable="false">sortByReplaceMe</string>
+    <string name="pref_sort_by_most_popular">most_popular</string>
 
 </resources>
