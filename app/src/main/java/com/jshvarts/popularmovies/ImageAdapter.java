@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
+    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w";
 
     private Context context;
-    List<String> posterPathList;
+    private List<String> posterPathList;
 
     public ImageAdapter(Context context, List<String> posterPathList) {
         this.context = context;
@@ -41,14 +41,20 @@ public class ImageAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
         if (convertView == null) {
-            // if it's not recycled, initialize some attributes
+            // if it's not recycled, initialize it
             imageView = new ImageView(context);
             imageView.setAdjustViewBounds(true);
-            Picasso.with(context).load(BASE_IMAGE_URL + posterPathList.get(position)).into(imageView);
-
+            Picasso.with(context).load(getImageUrl(posterPathList.get(position))).into(imageView);
         } else {
             imageView = (ImageView) convertView;
         }
         return imageView;
+    }
+
+    private String getImageUrl(String posterPath) {
+        StringBuilder imageUrlStringBuilder = new StringBuilder(BASE_IMAGE_URL);
+        imageUrlStringBuilder.append(context.getResources().getInteger(R.integer.image_size));
+        imageUrlStringBuilder.append(posterPath);
+        return imageUrlStringBuilder.toString();
     }
 }
