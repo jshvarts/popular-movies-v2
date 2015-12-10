@@ -10,6 +10,4 @@
     <string name="pref_sort_by_most_popular">popularity.desc</string>
     <string name="pref_sort_by_vote_average">vote_average.desc</string>
 
-    <!-- min vote count helps remove issues with movies voted high by very few -->
-    <string name="min_vote_count">1000</string>
 </resources>

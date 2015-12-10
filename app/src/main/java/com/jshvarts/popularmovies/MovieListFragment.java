@@ -43,9 +43,6 @@ public class MovieListFragment extends Fragment {
     @Bind(R.id.movie_list_gridview)
     protected GridView gridView;
 
-    @BindString(R.string.min_vote_count)
-    protected String minVoteCount;
-
     @BindString(R.string.pref_sort_by_key)
     protected String prefSortByKey;
 
@@ -69,7 +66,7 @@ public class MovieListFragment extends Fragment {
     private void populateMovieList() {
         String sortBy = sharedPreferences.getString((prefSortByKey), getString(R.string.pref_sort_by_most_popular));
 
-        final Call<MovieResults> call = movieApiClient.movies(sortBy, Integer.parseInt(minVoteCount), BuildConfig.THE_MOVIE_DB_API_KEY);
+        final Call<MovieResults> call = movieApiClient.movies(sortBy);
         call.enqueue(new Callback<MovieResults>() {
 
             @Override
