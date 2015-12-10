@@ -12,8 +12,6 @@ import retrofit.http.Query;
 @Singleton
 public interface MovieApiClient {
     @GET("/3/discover/movie")
-    Call<MovieResults> movies(@Query("sort_by") String sortBy,
-                              @Query("vote_count.gte") int minVoteCount,
-                              @Query("api_key") String apiKey);
+    Call<MovieResults> movies(@Query("sort_by") String sortBy);
 }
 
