@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies;
+package com.jshvarts.popularmovies.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.google.common.base.Preconditions;
+import com.jshvarts.popularmovies.R;
 
 /**
  * Movie detail activity

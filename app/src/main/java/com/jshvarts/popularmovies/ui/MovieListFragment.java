@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies;
+package com.jshvarts.popularmovies.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 
+import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.Movie;
 import com.jshvarts.popularmovies.data.MovieApiClient;

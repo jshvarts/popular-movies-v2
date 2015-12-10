@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MovieListActivity">
 
-    <fragment android:name="com.jshvarts.popularmovies.MovieListFragment"
+    <fragment android:name="com.jshvarts.popularmovies.ui.MovieListFragment"
         android:id="@+id/movie_list_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

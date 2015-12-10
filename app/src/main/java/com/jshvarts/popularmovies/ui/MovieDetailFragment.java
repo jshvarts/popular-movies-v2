@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies;
+package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.common.base.Preconditions;
+import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 
 import butterknife.Bind;
@@ -23,9 +24,6 @@ import butterknife.ButterKnife;
 public class MovieDetailFragment extends Fragment implements MovieDetailActivity.OnContentDetailRequestedListener {
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
-
-    @Bind(R.id.movie_detail_id)
-    protected TextView movieDetailIdTextView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

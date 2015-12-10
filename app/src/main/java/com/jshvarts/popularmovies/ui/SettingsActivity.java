@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies;
+package com.jshvarts.popularmovies.ui;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -7,6 +7,8 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
+
+import com.jshvarts.popularmovies.R;
 
 /**
  * Settings Activity that allows the user to set his or her preferences.
