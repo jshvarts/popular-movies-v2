@@ -1,7 +1,7 @@
 package com.jshvarts.popularmovies.application.di;
 
-import com.jshvarts.popularmovies.MovieDetailFragment;
-import com.jshvarts.popularmovies.MovieListFragment;
+import com.jshvarts.popularmovies.ui.MovieDetailFragment;
+import com.jshvarts.popularmovies.ui.MovieListFragment;
 
 import javax.inject.Singleton;
 

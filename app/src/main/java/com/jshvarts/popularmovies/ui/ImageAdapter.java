@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies;
+package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
