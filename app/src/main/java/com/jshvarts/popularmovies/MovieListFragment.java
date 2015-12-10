@@ -1,5 +1,6 @@
 package com.jshvarts.popularmovies;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListAdapter;
 
@@ -76,7 +78,7 @@ public class MovieListFragment extends Fragment {
                     if (results != null
                             && results.getMovies() != null
                             && !results.getMovies().isEmpty()) {
-                        displayResults(results.getMovies());
+                        initializeAdapter(results.getMovies());
                     } else {
                         Log.e(LOG_TAG, "empty movie list returned.");
                     }
@@ -98,12 +100,18 @@ public class MovieListFragment extends Fragment {
      * Parses movie list response and assigns the result to the adapter
      * @param movieList
      */
-    protected void displayResults(List<Movie> movieList) {
-        List<String> posterPathList = new ArrayList<>();
-        for (Movie movie : movieList) {
-            posterPathList.add(movie.getPosterPath());
-        }
-        movieListAdapter = new ImageAdapter(getActivity(), posterPathList);
+    protected void initializeAdapter(List<Movie> movieList) {
+        movieListAdapter = new ImageAdapter(getActivity(), movieList);
         gridView.setAdapter(movieListAdapter);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(LOG_TAG, "item clicked: " + id);
+                Intent detailIntent = new Intent(getActivity().getBaseContext(), MovieDetailActivity.class);
+                detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, String.valueOf(id));
+                getActivity().startActivity(detailIntent);
+            }
+        });
     }
 }

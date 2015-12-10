@@ -1,8 +1,7 @@
 package com.jshvarts.popularmovies.application.di;
 
-import com.jshvarts.popularmovies.MovieListActivity;
+import com.jshvarts.popularmovies.MovieDetailFragment;
 import com.jshvarts.popularmovies.MovieListFragment;
-import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 
 import javax.inject.Singleton;
 
@@ -17,7 +16,6 @@ import dagger.Component;
 @Component(modules = AppModule.class)
 public interface AppComponent {
 
-    void inject(PopularMoviesApplication application);
     void inject(MovieListFragment fragment);
-
+    void inject(MovieDetailFragment fragment);
 }
