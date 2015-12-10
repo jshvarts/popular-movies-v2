@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.jshvarts.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -18,23 +19,23 @@ public class ImageAdapter extends BaseAdapter {
     private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w";
 
     private Context context;
-    private List<String> posterPathList;
+    private List<Movie> movieList;
 
-    public ImageAdapter(Context context, List<String> posterPathList) {
+    public ImageAdapter(Context context, List<Movie> movieList) {
         this.context = context;
-        this.posterPathList = posterPathList;
+        this.movieList = movieList;
     }
 
     public int getCount() {
-        return posterPathList.size();
+        return movieList.size();
     }
 
     public Object getItem(int position) {
-        return posterPathList.get(position);
+        return movieList.get(position);
     }
 
     public long getItemId(int position) {
-        return 0;
+        return movieList.get(position).getId();
     }
 
     // create a new ImageView for each item referenced by the Adapter
@@ -44,17 +45,18 @@ public class ImageAdapter extends BaseAdapter {
             // if it's not recycled, initialize it
             imageView = new ImageView(context);
             imageView.setAdjustViewBounds(true);
-            Picasso.with(context).load(getImageUrl(posterPathList.get(position))).into(imageView);
+            String imageUrl = getImageUrl((Movie) movieList.get(position));
+            Picasso.with(context).load(imageUrl).into(imageView);
         } else {
             imageView = (ImageView) convertView;
         }
         return imageView;
     }
 
-    private String getImageUrl(String posterPath) {
+    private String getImageUrl(Movie movie) {
         StringBuilder imageUrlStringBuilder = new StringBuilder(BASE_IMAGE_URL);
         imageUrlStringBuilder.append(context.getResources().getInteger(R.integer.image_size));
-        imageUrlStringBuilder.append(posterPath);
+        imageUrlStringBuilder.append(movie.getPosterPath());
         return imageUrlStringBuilder.toString();
     }
 }

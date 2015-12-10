@@ -29,6 +29,9 @@ public class RetrofitMovieApiClient implements MovieApiClient {
     private OkHttpClient client;
 
     public RetrofitMovieApiClient(OkHttpClient client, HttpLoggingInterceptor interceptor) {
+        Preconditions.checkArgument(client != null, "OkHttpClient is required");
+        Preconditions.checkArgument(interceptor != null, "HttpLoggingInterceptor is required");
+
         this.client = client;
         interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         client.interceptors().add(new Interceptor() {
@@ -48,7 +51,6 @@ public class RetrofitMovieApiClient implements MovieApiClient {
 
     @Override
     public Call<MovieResults> movies(@Query("sort_by") String sortBy) {
-        Preconditions.checkState(client != null, "OkHttpClient must be instantiated");
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_API_URL)
