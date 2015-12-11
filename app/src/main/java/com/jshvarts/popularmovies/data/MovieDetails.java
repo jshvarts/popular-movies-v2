@@ -1,9 +1,12 @@
 package com.jshvarts.popularmovies.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * POJO that represents the movie detail.
  */
-public class MovieDetails extends Movie {
+public class MovieDetails extends Movie implements Parcelable {
 
     private final String originalTitle;
 
@@ -36,4 +39,36 @@ public class MovieDetails extends Movie {
     public String getReleaseDate() {
         return releaseDate;
     }
+
+    protected MovieDetails(Parcel in){
+        super(in);
+        this.originalTitle = in.readString();
+        this.overview = in.readString();
+        this.voteAverage = in.readDouble();
+        this.releaseDate = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeString(originalTitle);
+        dest.writeString(overview);
+        dest.writeDouble(voteAverage);
+        dest.writeString(releaseDate);
+    }
+
+    public static final Parcelable.Creator<MovieDetails> CREATOR = new Parcelable.Creator<MovieDetails>() {
+        public MovieDetails createFromParcel(Parcel in) {
+            return new MovieDetails(in);
+        }
+
+        public MovieDetails[] newArray(int size) {
+            return new MovieDetails[size];
+        }
+    };
 }
