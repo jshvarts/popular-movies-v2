@@ -1,6 +1,5 @@
 package com.jshvarts.popularmovies.data;
 
-import com.google.common.base.Preconditions;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,12 +65,12 @@ public class RetrofitMovieApiClient implements MovieApiClient {
     }
 
     @Override
-    public Call<MovieResults> movies(@Query("sort_by") String sortBy) {
+    public Call<MovieResults> movies(String sortBy) {
         return movieApiClient.movies(sortBy);
     }
 
     @Override
-    public Call<MovieDetails> movie(@Path("id") String id) {
+    public Call<MovieDetails> movie(String id) {
         return movieApiClient.movie(id);
     }
 }
