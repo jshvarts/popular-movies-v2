@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.jshvarts.popularmovies.application.Utils;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.RetrofitMovieApiClient;
 import com.squareup.okhttp.OkHttpClient;
@@ -48,5 +49,11 @@ public class AppModule {
     @Singleton
     public SharedPreferences provideSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(appContext);
+    }
+
+    @Provides
+    @Singleton
+    public Utils provideUtils() {
+        return new Utils(appContext);
     }
 }

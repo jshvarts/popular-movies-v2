@@ -1,6 +1,9 @@
 package com.jshvarts.popularmovies.data;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.jshvarts.popularmovies.BuildConfig;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Interceptor;
@@ -14,6 +17,7 @@ import java.io.IOException;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -27,6 +31,7 @@ public class RetrofitMovieApiClient implements MovieApiClient {
     private final String API_KEY_PARAM = "api_key";
 
     private OkHttpClient client;
+    private MovieApiClient movieApiClient;
 
     public RetrofitMovieApiClient(OkHttpClient client, HttpLoggingInterceptor interceptor) {
         Preconditions.checkArgument(client != null, "OkHttpClient is required");
@@ -47,19 +52,27 @@ public class RetrofitMovieApiClient implements MovieApiClient {
             }
         });
         client.interceptors().add(interceptor);
+
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_API_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(client)
+                .build();
+
+        movieApiClient = retrofit.create(MovieApiClient.class);
     }
 
     @Override
     public Call<MovieResults> movies(@Query("sort_by") String sortBy) {
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_API_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        MovieApiClient movieApiClient = retrofit.create(MovieApiClient.class);
-
         return movieApiClient.movies(sortBy);
+    }
+
+    @Override
+    public Call<MovieDetails> movie(@Path("id") String id) {
+        return movieApiClient.movie(id);
     }
 }

@@ -85,14 +85,14 @@ public class MovieListFragment extends Fragment {
                     }
                 } else {
                     ResponseBody errorBody = response.errorBody();
-                    Log.e(LOG_TAG, "failed to get to get movie list. response code: "
+                    Log.e(LOG_TAG, "failed to get movie list. response code: "
                             + response.code() + ", errorBody: " + errorBody);
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Log.e(LOG_TAG, "failed to get to get movie list.", t);
+                Log.e(LOG_TAG, "failed to get movie list. " + t.getMessage());
             }
         });
     }

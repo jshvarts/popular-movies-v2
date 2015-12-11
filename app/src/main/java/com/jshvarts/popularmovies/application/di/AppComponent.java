@@ -1,5 +1,6 @@
 package com.jshvarts.popularmovies.application.di;
 
+import com.jshvarts.popularmovies.ui.ImageAdapter;
 import com.jshvarts.popularmovies.ui.MovieDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieListFragment;
 
@@ -17,5 +18,6 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(MovieListFragment fragment);
+    void inject(ImageAdapter adapter);
     void inject(MovieDetailFragment fragment);
 }

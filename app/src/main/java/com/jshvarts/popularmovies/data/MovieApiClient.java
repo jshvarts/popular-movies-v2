@@ -4,6 +4,7 @@ import javax.inject.Singleton;
 
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -13,5 +14,8 @@ import retrofit.http.Query;
 public interface MovieApiClient {
     @GET("/3/discover/movie")
     Call<MovieResults> movies(@Query("sort_by") String sortBy);
+
+    @GET("/3/movie/{id}")
+    Call<MovieDetails> movie(@Path("id") String id);
 }
 
