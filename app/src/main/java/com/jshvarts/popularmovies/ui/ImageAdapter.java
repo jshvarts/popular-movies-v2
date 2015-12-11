@@ -7,7 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
-import com.jshvarts.popularmovies.application.Utils;
+import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.data.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 public class ImageAdapter extends BaseAdapter {
 
     @Inject
-    protected Utils utils;
+    protected ImageUtils imageUtils;
 
     private Context context;
     private List<Movie> movieList;
@@ -53,7 +53,7 @@ public class ImageAdapter extends BaseAdapter {
             // if it's not recycled, initialize it
             imageView = new ImageView(context);
             imageView.setAdjustViewBounds(true);
-            String imageUrl = utils.getImageUrl(((Movie) movieList.get(position)).getPosterPath());
+            String imageUrl = imageUtils.getImageUrl(((Movie) movieList.get(position)).getPosterPath());
             Picasso.with(context).load(imageUrl).into(imageView);
         } else {
             imageView = (ImageView) convertView;

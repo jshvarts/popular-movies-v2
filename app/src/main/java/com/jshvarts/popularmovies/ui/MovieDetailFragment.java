@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
+import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
-import com.jshvarts.popularmovies.application.Utils;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.MovieDetails;
 import com.squareup.okhttp.ResponseBody;
@@ -43,7 +43,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
     protected MovieApiClient movieApiClient;
 
     @Inject
-    protected Utils utils;
+    protected ImageUtils imageUtils;
 
     @Bind(R.id.poster_image)
     protected ImageView posterImage;
@@ -102,7 +102,7 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
                 if (response.isSuccess()) {
                     MovieDetails movie = response.body();
                     if (movie != null) {
-                        String imageUrl = utils.getImageUrl(movie.getPosterPath());
+                        String imageUrl = imageUtils.getImageUrl(movie.getPosterPath());
                         Picasso.with(getActivity()).load(imageUrl).into(posterImage);
 
                         originalTitle.setText(movie.getOriginalTitle());

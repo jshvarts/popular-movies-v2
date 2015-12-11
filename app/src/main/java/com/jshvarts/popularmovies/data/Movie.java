@@ -1,7 +1,7 @@
 package com.jshvarts.popularmovies.data;
 
 /**
- * Movie object POJO that represents the JSON movie object summary.
+ * POJO that represents the movie summary.
  */
 public class Movie {
     private final int id;
