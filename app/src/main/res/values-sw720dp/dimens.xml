@@ -2,7 +2,7 @@
     <dimen name="activity_horizontal_margin">64dp</dimen>
     <dimen name="movie_detail_fragment_margin_left">30dp</dimen>
     <dimen name="movie_detail_title_text_size">45sp</dimen>
-    <dimen name="movie_detail_poster_margin_top">30dp</dimen>
+    <dimen name="movie_detail_title_margin_top_bottom">30dp</dimen>
     <dimen name="movie_detail_metadata_margin_left">30dp</dimen>
     <dimen name="movie_detail_release_date_text_size">32sp</dimen>
     <dimen name="movie_detail_release_date_margin_bottom">40dp</dimen>
