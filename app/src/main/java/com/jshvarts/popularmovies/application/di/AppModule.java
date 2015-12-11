@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.jshvarts.popularmovies.application.Utils;
+import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.RetrofitMovieApiClient;
 import com.squareup.okhttp.OkHttpClient;
@@ -53,7 +53,7 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Utils provideUtils() {
-        return new Utils(appContext);
+    public ImageUtils provideUtils() {
+        return new ImageUtils(appContext);
     }
 }

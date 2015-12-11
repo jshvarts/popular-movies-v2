@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Movie results container POJO that represents the JSON object.
+ * Container that holds a list of movies.
  */
 public class MovieResults {
     @SerializedName("results")

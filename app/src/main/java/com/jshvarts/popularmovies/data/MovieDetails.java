@@ -1,7 +1,7 @@
 package com.jshvarts.popularmovies.data;
 
 /**
- * Movie details object POJO that represents the JSON movie object summary.
+ * POJO that represents the movie detail.
  */
 public class MovieDetails extends Movie {
 
