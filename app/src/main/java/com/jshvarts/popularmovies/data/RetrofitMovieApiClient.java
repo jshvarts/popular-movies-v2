@@ -33,12 +33,11 @@ public class RetrofitMovieApiClient implements MovieApiClient {
     private OkHttpClient client;
     private MovieApiClient movieApiClient;
 
-    public RetrofitMovieApiClient(OkHttpClient client, HttpLoggingInterceptor interceptor) {
-        Preconditions.checkArgument(client != null, "OkHttpClient is required");
-        Preconditions.checkArgument(interceptor != null, "HttpLoggingInterceptor is required");
+    public RetrofitMovieApiClient() {
+        client = new OkHttpClient();
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
 
-        this.client = client;
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         client.interceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -51,7 +50,7 @@ public class RetrofitMovieApiClient implements MovieApiClient {
                 return chain.proceed(request);
             }
         });
-        client.interceptors().add(interceptor);
+        client.interceptors().add(loggingInterceptor);
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
