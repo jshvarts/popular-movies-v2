@@ -1,14 +1,11 @@
 package com.jshvarts.popularmovies.data;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
- * Movie object POJO that represents the JSON movie object.
+ * Movie object POJO that represents the JSON movie object summary.
  */
 public class Movie {
     private final int id;
 
-    @SerializedName("poster_path")
     private final String posterPath;
 
     public Movie(int id, String posterPath) {

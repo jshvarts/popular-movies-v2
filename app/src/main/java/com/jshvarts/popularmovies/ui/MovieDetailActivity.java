@@ -16,7 +16,6 @@ import com.jshvarts.popularmovies.R;
  */
 public class MovieDetailActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MovieDetailActivity.class.getSimpleName();
     protected static final String MOVIE_ID_EXTRA = "id";
 
     private OnContentDetailRequestedListener contentRequestedListener;
