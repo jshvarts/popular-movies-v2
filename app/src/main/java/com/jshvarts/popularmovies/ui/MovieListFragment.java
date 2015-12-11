@@ -61,12 +61,15 @@ public class MovieListFragment extends Fragment {
         // Inject dependencies of this fragment.
         ((PopularMoviesApplication) getActivity().getApplication()).getDaggerComponent().inject(this);
 
-        populateMovieList();
+        retrieveMovieList();
 
         return rootView;
     }
 
-    private void populateMovieList() {
+    /**
+     * Makes async call via Retrofit and populates the Adapter with results
+     */
+    private void retrieveMovieList() {
         String sortBy = sharedPreferences.getString((prefSortByKey), getString(R.string.pref_sort_by_most_popular));
 
         final Call<MovieResults> call = movieApiClient.movies(sortBy);
@@ -102,8 +105,10 @@ public class MovieListFragment extends Fragment {
      * @param movieList
      */
     protected void initializeAdapter(List<Movie> movieList) {
+        Log.d(LOG_TAG, "initializing adapter with movie count: " + movieList.size());
         movieListAdapter = new ImageAdapter(getActivity(), movieList);
         gridView.setAdapter(movieListAdapter);
+        Log.d(LOG_TAG, "after setting adapter movie count: " + gridView.getAdapter().getCount());
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

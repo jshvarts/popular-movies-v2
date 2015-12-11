@@ -89,10 +89,15 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
     public void contentRequested(String id) {
         Preconditions.checkArgument(!TextUtils.isEmpty(id), "content id required");
         Log.d(LOG_TAG, "content id requested fragment: " + id);
-        populateMovie(id);
+
+        retrieveMovie(id);
     }
 
-    private void populateMovie(String id) {
+    /**
+     * Makes async call via Retrofit to retrieve movie details
+     * @param id
+     */
+    private void retrieveMovie(String id) {
 
         final Call<MovieDetails> call = movieApiClient.movie(id);
         call.enqueue(new Callback<MovieDetails>() {

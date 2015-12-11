@@ -49,7 +49,9 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         ImageView imageView;
-        if (convertView == null) {
+
+        // TODO use viewHolder pattern to properly recycle views
+        if (convertView == null || convertView.getId() == -1) {
             // if it's not recycled, initialize it
             imageView = new ImageView(context);
             imageView.setAdjustViewBounds(true);
