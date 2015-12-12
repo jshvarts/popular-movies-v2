@@ -10,6 +10,9 @@ import android.view.MenuItem;
 
 import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
+import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Movie detail activity
@@ -17,16 +20,6 @@ import com.jshvarts.popularmovies.R;
 public class MovieDetailActivity extends AppCompatActivity {
 
     protected static final String MOVIE_ID_EXTRA = "id";
-
-    private OnContentDetailRequestedListener contentRequestedListener;
-
-    public void setContentDetailRequestedListener(OnContentDetailRequestedListener contentRequestedListener) {
-        this.contentRequestedListener = contentRequestedListener;
-    }
-
-    public void removeContentDetailRequestedListener(OnContentDetailRequestedListener contentRequestedListener) {
-        this.contentRequestedListener = null;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +30,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         String id = getIntent().getStringExtra(MovieDetailActivity.MOVIE_ID_EXTRA);
         Preconditions.checkState(!TextUtils.isEmpty(id), "valid id in intent is required");
-        if (contentRequestedListener != null) {
-            contentRequestedListener.contentRequested(id);
-        }
+
+        EventBus.getDefault().post(new MovieDetailsRequestedEvent(id));
     }
 
     @Override
@@ -57,12 +49,5 @@ public class MovieDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Allows listening on events when this activity is launched with a valid intent
-     */
-    interface OnContentDetailRequestedListener {
-        void contentRequested(String id);
     }
 }

@@ -1,5 +1,6 @@
 package com.jshvarts.popularmovies.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
+import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.Movie;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.MovieResults;
@@ -29,6 +31,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.BindString;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -60,8 +63,6 @@ public class MovieListFragment extends Fragment {
     @BindString(R.string.pref_sort_by_key)
     protected String prefSortByKey;
 
-    private ListAdapter movieListAdapter;
-
     private List<Movie> movieList;
 
     @Override
@@ -88,9 +89,33 @@ public class MovieListFragment extends Fragment {
         // Inject dependencies of this fragment.
         ((PopularMoviesApplication) getActivity().getApplication()).getDaggerComponent().inject(this);
 
-        retrieveMovieList();
-
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        retrieveMovieList();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDetach() {
+        EventBus.getDefault().unregister(this);
+        super.onDetach();
+    }
+
+    public void onEventMainThread(SharedPrefUpdateEvent event) {
+        if (event.getPrefKey().equals(getString(R.string.pref_sort_by_key))) {
+            Log.d(LOG_TAG, "shared pref update event received: " + event.getPrefKey());
+            movieList = null;
+            retrieveMovieList();
+        }
     }
 
     /**
@@ -153,7 +178,7 @@ public class MovieListFragment extends Fragment {
         // save state
         this.movieList = movieList;
 
-        movieListAdapter = new ImageAdapter(getActivity(), movieList);
+        ListAdapter movieListAdapter = new ImageAdapter(getContext(), movieList);
         gridView.setAdapter(movieListAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

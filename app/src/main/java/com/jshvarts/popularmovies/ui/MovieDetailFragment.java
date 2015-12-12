@@ -13,9 +13,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
+import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.MovieDetails;
@@ -31,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -39,7 +40,7 @@ import retrofit.Retrofit;
 /**
  * Movie detail fragment responsible for lookup extra movie attributes.
  */
-public class MovieDetailFragment extends Fragment implements MovieDetailActivity.OnContentDetailRequestedListener {
+public class MovieDetailFragment extends Fragment {
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
@@ -103,21 +104,19 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        ((MovieDetailActivity)getActivity()).setContentDetailRequestedListener(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDetach() {
+        EventBus.getDefault().unregister(this);
         super.onDetach();
-        ((MovieDetailActivity)getActivity()).removeContentDetailRequestedListener(this);
     }
 
-    @Override
-    public void contentRequested(String id) {
-        Preconditions.checkArgument(!TextUtils.isEmpty(id), "content id required");
-        Log.d(LOG_TAG, "content id requested fragment: " + id);
-
-        retrieveMovie(id);
+    public void onEventMainThread(MovieDetailsRequestedEvent event) {
+        Log.d(LOG_TAG, "content id requested: " + event.getId());
+        movieDetails = null;
+        retrieveMovie(event.getId());
     }
 
     /**
