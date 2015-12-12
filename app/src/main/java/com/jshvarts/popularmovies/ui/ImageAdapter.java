@@ -1,11 +1,13 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.data.Movie;
@@ -48,18 +50,28 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
 
-        // TODO use viewHolder pattern to properly recycle views
+        ViewHolder holder = null;
+
         if (convertView == null || convertView.getId() == -1) {
-            // if it's not recycled, initialize it
-            imageView = new ImageView(context);
-            imageView.setAdjustViewBounds(true);
-            String imageUrl = imageUtils.getImageUrl(((Movie) movieList.get(position)).getPosterPath());
-            Picasso.with(context).load(imageUrl).into(imageView);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(R.layout.movie_list_item, null);
+
+            holder = new ViewHolder();
+            holder.imageView = (ImageView) convertView.findViewById(R.id.movie_list_item_imageview);
+            convertView.setTag(holder);
         } else {
-            imageView = (ImageView) convertView;
+            holder = (ViewHolder) convertView.getTag();
         }
-        return imageView;
+
+        holder.imageView.setAdjustViewBounds(true);
+        String imageUrl = imageUtils.getImageUrl((movieList.get(position)).getPosterPath());
+        Picasso.with(context).load(imageUrl).into(holder.imageView);
+
+        return convertView;
+    }
+
+    private class ViewHolder {
+        private ImageView imageView;
     }
 }
