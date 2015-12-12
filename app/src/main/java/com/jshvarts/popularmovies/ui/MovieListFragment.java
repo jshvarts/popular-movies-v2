@@ -21,6 +21,7 @@ import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.Movie;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.MovieResults;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 
 import java.util.ArrayList;
@@ -108,6 +109,13 @@ public class MovieListFragment extends Fragment {
     public void onDetach() {
         EventBus.getDefault().unregister(this);
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     public void onEventMainThread(SharedPrefUpdateEvent event) {

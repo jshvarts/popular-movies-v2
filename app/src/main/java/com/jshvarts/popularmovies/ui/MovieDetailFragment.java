@@ -19,6 +19,7 @@ import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.MovieApiClient;
 import com.jshvarts.popularmovies.data.MovieDetails;
+import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
 
@@ -111,6 +112,13 @@ public class MovieDetailFragment extends Fragment {
     public void onDetach() {
         EventBus.getDefault().unregister(this);
         super.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
+        refWatcher.watch(this);
     }
 
     public void onEventMainThread(MovieDetailsRequestedEvent event) {
