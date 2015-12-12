@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,9 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
 
     @Inject
     protected ImageUtils imageUtils;
+
+    @Bind(R.id.progress_bar)
+    protected ProgressBar progressBar;
 
     @Bind(R.id.poster_image)
     protected ImageView posterImage;
@@ -130,11 +134,16 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
+
         final Call<MovieDetails> call = movieApiClient.movie(id);
         call.enqueue(new Callback<MovieDetails>() {
 
             @Override
             public void onResponse(Response<MovieDetails> response, Retrofit retrofit) {
+
+                progressBar.setVisibility(View.GONE);
+
                 if (response.isSuccess()) {
                     MovieDetails movieDetails = response.body();
                     if (movieDetails != null) {
@@ -153,6 +162,8 @@ public class MovieDetailFragment extends Fragment implements MovieDetailActivity
 
             @Override
             public void onFailure(Throwable t) {
+                progressBar.setVisibility(View.GONE);
+
                 Log.e(LOG_TAG, "failed to get movie details. " + t.getMessage());
                 reportSystemError();
             }

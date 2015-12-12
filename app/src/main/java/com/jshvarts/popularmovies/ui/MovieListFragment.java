@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ListAdapter;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
@@ -52,6 +53,9 @@ public class MovieListFragment extends Fragment {
 
     @Bind(R.id.movie_list_gridview)
     protected GridView gridView;
+
+    @Bind(R.id.progress_bar)
+    protected ProgressBar progressBar;
 
     @BindString(R.string.pref_sort_by_key)
     protected String prefSortByKey;
@@ -102,11 +106,16 @@ public class MovieListFragment extends Fragment {
 
         String sortBy = sharedPreferences.getString((prefSortByKey), getString(R.string.pref_sort_by_most_popular));
 
+        progressBar.setVisibility(View.VISIBLE);
+
         final Call<MovieResults> call = movieApiClient.movies(sortBy);
         call.enqueue(new Callback<MovieResults>() {
 
             @Override
             public void onResponse(Response<MovieResults> response, Retrofit retrofit) {
+
+                progressBar.setVisibility(View.GONE);
+
                 if (response.isSuccess()) {
                     MovieResults results = response.body();
                     if (results != null
@@ -127,6 +136,8 @@ public class MovieListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
+                progressBar.setVisibility(View.GONE);
+
                 Log.e(LOG_TAG, "failed to get movie list. " + t.getMessage());
                 reportSystemError();
             }
@@ -157,6 +168,6 @@ public class MovieListFragment extends Fragment {
     }
 
     private void reportSystemError() {
-        Toast.makeText(getActivity(), MOVIE_LIST_UNAVAILABLE, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), MOVIE_LIST_UNAVAILABLE, Toast.LENGTH_LONG).show();
     }
 }

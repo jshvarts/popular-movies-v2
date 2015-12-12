@@ -1,6 +1,5 @@
 <resources>
     <dimen name="activity_horizontal_margin">64dp</dimen>
-    <dimen name="movie_detail_fragment_margin_left">24dp</dimen>
     <dimen name="movie_detail_title_text_size">40sp</dimen>
     <dimen name="movie_detail_title_margin_top_bottom">25dp</dimen>
     <dimen name="movie_detail_metadata_margin_left">25dp</dimen>
