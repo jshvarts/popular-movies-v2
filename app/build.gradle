@@ -8,6 +8,7 @@ project.ext {
     appcompatV7Version = "23.1.1"
     javaxAnnotationVersion = "10.0-b28"
     guavaVersion = "18.0"
+    eventbusVersion = "2.4.1"
 }
 
 apply plugin: 'com.android.application'
@@ -47,6 +48,8 @@ dependencies {
     compile "com.squareup.okhttp:logging-interceptor:$project.okHttpLoggingInterceptorVersion"
     compile "com.google.dagger:dagger:$project.daggerVersion"
     compile "com.google.guava:guava:$project.guavaVersion"
+    compile "de.greenrobot:eventbus:$project.eventbusVersion"
+
     provided "com.google.dagger:dagger-compiler:$project.daggerVersion"
     provided "org.glassfish:javax.annotation:$project.javaxAnnotationVersion"
 }

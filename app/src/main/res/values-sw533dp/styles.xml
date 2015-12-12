@@ -1,0 +1,5 @@
+<resources>
+    <style name="progressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:indeterminateProgressStyle">@android:style/Widget.ProgressBar.Large</item>
+    </style>
+</resources>

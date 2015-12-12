@@ -3,6 +3,7 @@ package com.jshvarts.popularmovies.application.di;
 import com.jshvarts.popularmovies.ui.ImageAdapter;
 import com.jshvarts.popularmovies.ui.MovieDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieListFragment;
+import com.jshvarts.popularmovies.ui.SettingsActivity;
 
 import javax.inject.Singleton;
 
@@ -17,7 +18,13 @@ import dagger.Component;
 @Component(modules = AppModule.class)
 public interface AppComponent {
 
+    // activities
+    void inject(SettingsActivity activity);
+
+    // fragments
     void inject(MovieListFragment fragment);
-    void inject(ImageAdapter adapter);
     void inject(MovieDetailFragment fragment);
+
+    // adapters
+    void inject(ImageAdapter adapter);
 }
