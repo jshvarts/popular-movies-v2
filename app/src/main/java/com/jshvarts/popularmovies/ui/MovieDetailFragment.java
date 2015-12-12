@@ -115,7 +115,6 @@ public class MovieDetailFragment extends Fragment {
 
     public void onEventMainThread(MovieDetailsRequestedEvent event) {
         Log.d(LOG_TAG, "content id requested: " + event.getId());
-        movieDetails = null;
         retrieveMovie(event.getId());
     }
 
