@@ -29,8 +29,9 @@ public class PopularMoviesApplication extends Application {
         //initialize dependency-injection object graph
         appComponent = buildDaggerComponent();
 
-        refWatcher = LeakCanary.install(this);
-
+        if (!isInUnitTests()) {
+            refWatcher = LeakCanary.install(this);
+        }
     }
 
     public static RefWatcher getRefWatcher(Context context) {
@@ -51,5 +52,9 @@ public class PopularMoviesApplication extends Application {
         return DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
+    }
+
+    protected boolean isInUnitTests() {
+        return false;
     }
 }

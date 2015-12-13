@@ -14,7 +14,7 @@ import javax.inject.Singleton;
 @Singleton
 public class ImageUtils {
 
-    private static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w";
+    public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w";
 
     private Context context;
 
