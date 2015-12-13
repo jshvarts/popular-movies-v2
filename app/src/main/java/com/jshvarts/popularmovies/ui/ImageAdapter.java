@@ -64,7 +64,6 @@ public class ImageAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.imageView.setAdjustViewBounds(true);
         String imageUrl = imageUtils.getImageUrl((movieList.get(position)).getPosterPath());
         Picasso.with(context).load(imageUrl).into(holder.imageView);
 
