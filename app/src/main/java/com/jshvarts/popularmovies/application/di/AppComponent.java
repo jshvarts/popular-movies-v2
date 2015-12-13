@@ -4,6 +4,7 @@ import com.jshvarts.popularmovies.ui.ImageAdapter;
 import com.jshvarts.popularmovies.ui.MovieDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieListFragment;
 import com.jshvarts.popularmovies.ui.SettingsActivity;
+import com.jshvarts.popularmovies.ui.SettingsFragment;
 
 import javax.inject.Singleton;
 
@@ -24,6 +25,7 @@ public interface AppComponent {
     // fragments
     void inject(MovieListFragment fragment);
     void inject(MovieDetailFragment fragment);
+    void inject(SettingsFragment fragment);
 
     // adapters
     void inject(ImageAdapter adapter);
