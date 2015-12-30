@@ -1,5 +1,6 @@
 package com.jshvarts.popularmovies.data;
 
+import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -34,9 +35,8 @@ public class RetrofitMovieApiClient implements MovieApiClient {
 
     public RetrofitMovieApiClient() {
         client = new OkHttpClient();
-        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
 
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        // Add query param interceptor
         client.interceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -49,7 +49,14 @@ public class RetrofitMovieApiClient implements MovieApiClient {
                 return chain.proceed(request);
             }
         });
+
+        // Add logging interceptor
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         client.interceptors().add(loggingInterceptor);
+
+        // Add stetho debug interceptor
+        client.networkInterceptors().add(new StethoInterceptor());
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
