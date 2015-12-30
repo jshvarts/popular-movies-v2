@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import com.facebook.stetho.Stetho;
 import com.jshvarts.popularmovies.application.di.AppComponent;
 import com.jshvarts.popularmovies.application.di.AppModule;
 import com.jshvarts.popularmovies.application.di.DaggerAppComponent;
@@ -25,6 +26,7 @@ public class PopularMoviesApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Stetho.initializeWithDefaults(this);
 
         //initialize dependency-injection object graph
         appComponent = buildDaggerComponent();
