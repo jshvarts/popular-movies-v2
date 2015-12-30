@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.jshvarts.popularmovies.application.ImageUtils;
-import com.jshvarts.popularmovies.data.MovieApiClient;
-import com.jshvarts.popularmovies.data.RetrofitMovieApiClient;
+import com.jshvarts.popularmovies.data.MovieDetailApiClient;
+import com.jshvarts.popularmovies.data.MovieListApiClient;
+import com.jshvarts.popularmovies.data.RetrofitMovieDetailApiClient;
+import com.jshvarts.popularmovies.data.RetrofitMovieListApiClient;
 
 import javax.inject.Singleton;
 
@@ -27,8 +29,14 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public MovieApiClient provideMovieApiClient() {
-        return new RetrofitMovieApiClient();
+    public MovieListApiClient provideMovieListApiClient() {
+        return new RetrofitMovieListApiClient();
+    }
+
+    @Provides
+    @Singleton
+    public MovieDetailApiClient provideMovieDetailApiClient() {
+        return new RetrofitMovieDetailApiClient();
     }
 
     @Provides
