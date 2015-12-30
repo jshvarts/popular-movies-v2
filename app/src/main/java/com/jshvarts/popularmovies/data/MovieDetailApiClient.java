@@ -13,5 +13,8 @@ import retrofit.http.Path;
 public interface MovieDetailApiClient {
     @GET("/3/movie/{id}")
     Call<MovieDetails> movie(@Path("id") String id);
+
+    @GET("/3/movie/{id}/reviews")
+    Call<MovieReviewCountResults> reviewCount(@Path("id") String id);
 }
 

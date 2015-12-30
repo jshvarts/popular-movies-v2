@@ -10,6 +10,7 @@ import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.http.Path;
 
 /**
  * Retrofit implementation of the Movie Api Client.
@@ -47,5 +48,10 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
     @Override
     public Call<MovieDetails> movie(String id) {
         return retrofitInstance.create(MovieDetailApiClient.class).movie(id);
+    }
+
+    @Override
+    public Call<MovieReviewCountResults> reviewCount(String id) {
+        return retrofitInstance.create(MovieDetailApiClient.class).reviewCount(id);
     }
 }
