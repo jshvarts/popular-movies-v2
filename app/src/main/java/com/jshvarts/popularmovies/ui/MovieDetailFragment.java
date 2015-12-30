@@ -19,6 +19,7 @@ import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.MovieDetails;
+import com.jshvarts.popularmovies.data.MovieReviewCountResults;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
@@ -45,11 +46,17 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
-    private static final String INSTANCE_STATE_KEY = "movieDetails";
+    private static final String INSTANCE_STATE_MOVIE_DETAIL_KEY = "movieDetails";
+
+    private static final String INSTANCE_STATE_REVIEW_COUNT_KEY = "reviewCount";
 
     private static final String MOVIE_DETAILS_UNAVAILABLE = "Unable to retrieve movie details. Please try again.";
 
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
+
+    private static final int REVIEW_COUNT_PENDING_LOOKUP = -1;
+
+    private static final int REVIEW_COUNT_UNAVAILABLE = 0;
 
     @Inject
     protected MovieDetailApiClient movieDetailApiClient;
@@ -75,19 +82,35 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.release_date)
     protected TextView releaseDate;
 
+    @Bind(R.id.review_count_label)
+    protected TextView reviewCountLabel;
+
+    @Bind(R.id.review_count)
+    protected TextView reviewCountText;
+
     protected MovieDetails movieDetails;
+
+    protected int reviewCount = REVIEW_COUNT_PENDING_LOOKUP;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE_KEY)) {
-            movieDetails = savedInstanceState.getParcelable(INSTANCE_STATE_KEY);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(INSTANCE_STATE_MOVIE_DETAIL_KEY)) {
+                movieDetails = savedInstanceState.getParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY);
+            }
+            if (savedInstanceState.containsKey(INSTANCE_STATE_REVIEW_COUNT_KEY)) {
+                reviewCount = savedInstanceState.getInt(INSTANCE_STATE_REVIEW_COUNT_KEY);
+            }
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(INSTANCE_STATE_KEY, movieDetails);
+        outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, movieDetails);
+        if (REVIEW_COUNT_PENDING_LOOKUP != reviewCount) {
+            outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, reviewCount);
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -132,11 +155,12 @@ public class MovieDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveMovie(String id) {
+    private void retrieveMovie(final String id) {
 
         // use state if available
-        if (movieDetails != null) {
-            initializeMovieDetails(movieDetails);
+        if (movieDetails != null && REVIEW_COUNT_UNAVAILABLE != reviewCount) {
+            initializeMovieDetailsUI(movieDetails);
+            initializeReviewCountUI(reviewCount);
             return;
         }
 
@@ -153,7 +177,8 @@ public class MovieDetailFragment extends Fragment {
                 if (response.isSuccess()) {
                     MovieDetails movieDetails = response.body();
                     if (movieDetails != null) {
-                        initializeMovieDetails(movieDetails);
+                        initializeMovieDetailsUI(movieDetails);
+                        retrieveReviewCount(id);
                     } else {
                         Log.e(LOG_TAG, "empty movie details returned.");
                         reportSystemError();
@@ -177,6 +202,54 @@ public class MovieDetailFragment extends Fragment {
     }
 
     /**
+     * Checks to see if the movie review count was preserved as part of instance state.
+     * If so, uses it to populate the view. Otherwise, makes an async call via Retrofit to get the review count
+
+     * @param id
+     */
+    private void retrieveReviewCount(String id) {
+
+        // use state if available
+        if (REVIEW_COUNT_PENDING_LOOKUP != reviewCount) {
+            initializeReviewCountUI(reviewCount);
+            return;
+        }
+
+        final Call<MovieReviewCountResults> call = movieDetailApiClient.reviewCount(id);
+        call.enqueue(new Callback<MovieReviewCountResults>() {
+
+            @Override
+            public void onResponse(Response<MovieReviewCountResults> response, Retrofit retrofit) {
+
+                progressBar.setVisibility(View.GONE);
+
+                if (response.isSuccess()) {
+                    MovieReviewCountResults reviewCountResults = response.body();
+                    if (reviewCountResults != null) {
+                        initializeReviewCountUI(reviewCountResults.getTotalResults());
+                    } else {
+                        Log.e(LOG_TAG, "empty movie review count.");
+                        reportSystemError();
+                    }
+                } else {
+                    ResponseBody errorBody = response.errorBody();
+                    Log.e(LOG_TAG, "failed to get movie review count. response code: "
+                            + response.code() + ", errorBody: " + errorBody);
+
+                    reviewCount = REVIEW_COUNT_UNAVAILABLE;
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(LOG_TAG, "failed to get movie review count. " + t.getMessage());
+
+                reviewCount = REVIEW_COUNT_UNAVAILABLE;
+            }
+        });
+    }
+
+    /**
      * Extracts year portion for presentation from the release date
      *
      * @param releaseDate
@@ -195,7 +268,7 @@ public class MovieDetailFragment extends Fragment {
         return null;
     }
 
-    private void initializeMovieDetails(MovieDetails movieDetails) {
+    private void initializeMovieDetailsUI(MovieDetails movieDetails) {
 
         // save state
         this.movieDetails = movieDetails;
@@ -211,6 +284,16 @@ public class MovieDetailFragment extends Fragment {
         if (!TextUtils.isEmpty(releaseYear)) {
             releaseDate.setText(releaseYear);
         }
+    }
+
+    private void initializeReviewCountUI(int reviewCount) {
+
+        // save state
+        this.reviewCount = reviewCount;
+
+        // display review count label and value after the value is set
+        reviewCountLabel.setVisibility(View.VISIBLE);
+        reviewCountText.setText(String.valueOf(reviewCount));
     }
 
     private void reportSystemError() {

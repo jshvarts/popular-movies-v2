@@ -11,4 +11,7 @@
     <string name="pref_sort_by_most_popular">popularity.desc</string>
     <string name="pref_sort_by_vote_average">vote_average.desc</string>
 
+    <!-- movie detail -->
+    <string name="movie_detail_review_count_label">"Reviews Available: "</string>
+
 </resources>

@@ -55,6 +55,27 @@
                         android:textSize="@dimen/movie_detail_vote_average_text_size"
                         android:textStyle="bold" />
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/movie_detail_review_count_margin_top">
+
+                        <TextView
+                            android:id="@+id/review_count_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/movie_detail_review_count_label"
+                            android:textSize="@dimen/movie_detail_review_count_text_size"
+                            android:visibility="invisible" />
+
+                        <TextView
+                            android:id="@+id/review_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/movie_detail_review_count_text_size" />
+                    </LinearLayout>
+
                 </LinearLayout>
 
             </LinearLayout>
