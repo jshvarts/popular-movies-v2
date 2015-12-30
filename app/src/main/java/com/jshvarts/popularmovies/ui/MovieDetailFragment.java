@@ -1,6 +1,7 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -17,9 +18,9 @@ import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
-import com.jshvarts.popularmovies.data.MovieDetailApiClient;
-import com.jshvarts.popularmovies.data.MovieDetails;
-import com.jshvarts.popularmovies.data.MovieReviewCountResults;
+import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
+import com.jshvarts.popularmovies.data.model.MovieDetails;
+import com.jshvarts.popularmovies.data.model.MovieReviewCount;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
@@ -33,6 +34,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
@@ -87,6 +89,9 @@ public class MovieDetailFragment extends Fragment {
 
     @Bind(R.id.review_count)
     protected TextView reviewCountText;
+
+    @Bind(R.id.read_reviews_link)
+    protected TextView readReviewsLink;
 
     protected MovieDetails movieDetails;
 
@@ -147,6 +152,14 @@ public class MovieDetailFragment extends Fragment {
     public void onEventMainThread(MovieDetailsRequestedEvent event) {
         Log.d(LOG_TAG, "content id requested: " + event.getId());
         retrieveMovie(event.getId());
+    }
+
+    @OnClick(R.id.read_reviews_link)
+    protected void onReadReviewsLinkClick() {
+        Log.d(LOG_TAG, "on read reviews link click for movie id " + movieDetails.getId());
+        Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
+        moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA, String.valueOf(movieDetails.getId()));
+        startActivity(moviewReviewsIntent);
     }
 
     /**
@@ -215,16 +228,16 @@ public class MovieDetailFragment extends Fragment {
             return;
         }
 
-        final Call<MovieReviewCountResults> call = movieDetailApiClient.reviewCount(id);
-        call.enqueue(new Callback<MovieReviewCountResults>() {
+        final Call<MovieReviewCount> call = movieDetailApiClient.reviewCount(id);
+        call.enqueue(new Callback<MovieReviewCount>() {
 
             @Override
-            public void onResponse(Response<MovieReviewCountResults> response, Retrofit retrofit) {
+            public void onResponse(Response<MovieReviewCount> response, Retrofit retrofit) {
 
                 progressBar.setVisibility(View.GONE);
 
                 if (response.isSuccess()) {
-                    MovieReviewCountResults reviewCountResults = response.body();
+                    MovieReviewCount reviewCountResults = response.body();
                     if (reviewCountResults != null) {
                         initializeReviewCountUI(reviewCountResults.getTotalResults());
                     } else {
@@ -294,6 +307,9 @@ public class MovieDetailFragment extends Fragment {
         // display review count label and value after the value is set
         reviewCountLabel.setVisibility(View.VISIBLE);
         reviewCountText.setText(String.valueOf(reviewCount));
+        if (reviewCount != REVIEW_COUNT_UNAVAILABLE) {
+            readReviewsLink.setVisibility(View.VISIBLE);
+        }
     }
 
     private void reportSystemError() {

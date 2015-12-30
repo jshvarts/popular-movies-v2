@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import com.google.common.base.Preconditions;
 
 /**
- * Movie detail requested event for event bus.
+ * Movie reviews requested event for event bus.
  */
-public class MovieDetailsRequestedEvent {
+public class MovieReviewsRequestedEvent {
     private String id;
 
-    public MovieDetailsRequestedEvent(String id) {
+    public MovieReviewsRequestedEvent(String id) {
         Preconditions.checkArgument(!TextUtils.isEmpty(id), "id is required");
         this.id = id;
     }

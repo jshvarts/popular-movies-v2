@@ -18,9 +18,9 @@ import android.widget.Toast;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
-import com.jshvarts.popularmovies.data.Movie;
-import com.jshvarts.popularmovies.data.MovieListApiClient;
-import com.jshvarts.popularmovies.data.MovieResults;
+import com.jshvarts.popularmovies.data.model.Movie;
+import com.jshvarts.popularmovies.data.access.remote.MovieListApiClient;
+import com.jshvarts.popularmovies.data.model.MovieResults;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 

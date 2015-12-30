@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * POJO that represents the movie review.
  */
 public class MovieReview implements Parcelable {
-    private final int id;
+    private final String id;
 
     private final String author;
 
@@ -15,14 +15,14 @@ public class MovieReview implements Parcelable {
 
     private final String url;
 
-    public MovieReview(int id, String author, String content, String url) {
+    public MovieReview(String id, String author, String content, String url) {
         this.id = id;
         this.author = author;
         this.content = content;
         this.url = url;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -39,7 +39,7 @@ public class MovieReview implements Parcelable {
     }
 
     protected MovieReview(Parcel in) {
-        id = in.readInt();
+        id = in.readString();
         author = in.readString();
         content = in.readString();
         url = in.readString();
@@ -51,7 +51,7 @@ public class MovieReview implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeString(id);
         dest.writeString(author);
         dest.writeString(content);
         dest.writeString(url);

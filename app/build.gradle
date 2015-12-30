@@ -66,6 +66,8 @@ dependencies {
     compile "com.google.guava:guava:$project.guavaVersion"
     compile "de.greenrobot:eventbus:$project.eventbusVersion"
     compile "com.android.support:support-annotations:$project.supportAnnotationsVersion"
+    compile "com.android.support:recyclerview-v7:$project.supportAnnotationsVersion"
+    compile "com.android.support:cardview-v7:$project.supportAnnotationsVersion"
 
     // stetho for debugging
     compile "com.facebook.stetho:stetho:$project.stethoVersion"

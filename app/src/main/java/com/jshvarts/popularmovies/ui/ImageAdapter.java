@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.ImageUtils;
-import com.jshvarts.popularmovies.data.Movie;
+import com.jshvarts.popularmovies.data.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

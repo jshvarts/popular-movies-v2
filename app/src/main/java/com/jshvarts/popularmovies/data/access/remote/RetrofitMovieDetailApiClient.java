@@ -1,30 +1,33 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.access.remote;
 
-import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jshvarts.popularmovies.data.model.MovieDetails;
+import com.jshvarts.popularmovies.data.model.MovieReview;
+import com.jshvarts.popularmovies.data.model.MovieReviewCount;
+import com.jshvarts.popularmovies.data.model.MovieReviewResults;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
+import retrofit.http.Path;
 
 /**
  * Retrofit implementation of the Movie Api Client.
  */
-public class RetrofitMovieListApiClient implements MovieListApiClient {
+public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
 
     private OkHttpClient client;
     private Retrofit retrofitInstance;
 
-    public RetrofitMovieListApiClient() {
+    public RetrofitMovieDetailApiClient() {
         client = new OkHttpClient();
 
-        // Add query param interceptors
+        // Add query param interceptor
         client.interceptors().add(new QueryParamApiKeyInterceptor());
-        client.interceptors().add(new QueryParamMinVoteCountInterceptor());
 
         // Add logging interceptor
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -46,7 +49,22 @@ public class RetrofitMovieListApiClient implements MovieListApiClient {
     }
 
     @Override
-    public Call<MovieResults> movies(String sortBy) {
-        return retrofitInstance.create(MovieListApiClient.class).movies(sortBy);
+    public Call<MovieDetails> movie(String id) {
+        return retrofitInstance.create(MovieDetailApiClient.class).movie(id);
+    }
+
+    @Override
+    public Call<MovieReviewCount> reviewCount(@Path("id") String movieId) {
+        return retrofitInstance.create(MovieDetailApiClient.class).reviewCount(movieId);
+    }
+
+    @Override
+    public Call<MovieReviewResults> reviews(@Path("id") String movieId) {
+        return retrofitInstance.create(MovieDetailApiClient.class).reviews(movieId);
+    }
+
+    @Override
+    public Call<MovieReview> review(@Path("id") String reviewId) {
+        return retrofitInstance.create(MovieDetailApiClient.class).review(reviewId);
     }
 }
