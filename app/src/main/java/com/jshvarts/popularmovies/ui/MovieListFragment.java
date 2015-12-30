@@ -19,7 +19,7 @@ import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.Movie;
-import com.jshvarts.popularmovies.data.MovieApiClient;
+import com.jshvarts.popularmovies.data.MovieListApiClient;
 import com.jshvarts.popularmovies.data.MovieResults;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
@@ -50,7 +50,7 @@ public class MovieListFragment extends Fragment {
     private static final String MOVIE_LIST_UNAVAILABLE = "Unable to retrieve movie list. Please try again.";
 
     @Inject
-    protected MovieApiClient movieApiClient;
+    protected MovieListApiClient movieListApiClient;
 
     @Inject
     protected SharedPreferences sharedPreferences;
@@ -141,7 +141,7 @@ public class MovieListFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final Call<MovieResults> call = movieApiClient.movies(sortBy);
+        final Call<MovieResults> call = movieListApiClient.movies(sortBy);
         call.enqueue(new Callback<MovieResults>() {
 
             @Override

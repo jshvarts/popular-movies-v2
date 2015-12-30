@@ -17,7 +17,7 @@ import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
-import com.jshvarts.popularmovies.data.MovieApiClient;
+import com.jshvarts.popularmovies.data.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.MovieDetails;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
@@ -52,7 +52,7 @@ public class MovieDetailFragment extends Fragment {
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
 
     @Inject
-    protected MovieApiClient movieApiClient;
+    protected MovieDetailApiClient movieDetailApiClient;
 
     @Inject
     protected ImageUtils imageUtils;
@@ -142,7 +142,7 @@ public class MovieDetailFragment extends Fragment {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        final Call<MovieDetails> call = movieApiClient.movie(id);
+        final Call<MovieDetails> call = movieDetailApiClient.movie(id);
         call.enqueue(new Callback<MovieDetails>() {
 
             @Override
