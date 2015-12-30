@@ -1,6 +1,5 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.access.remote;
 
-import com.jshvarts.popularmovies.BuildConfig;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.Request;
@@ -9,16 +8,17 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 /**
- * Global API Key interceptor required to append apiKey for all movieDB requests.
+ * Min Vote request interceptor used by movieDB list requests.
  */
-public class QueryParamApiKeyInterceptor implements Interceptor {
-    private final String API_KEY_PARAM = "api_key";
+public class QueryParamMinVoteCountInterceptor implements Interceptor {
+    private final String MIN_VOTE_COUNT_PARAM = "vote_count.gte";
+    private final String MIN_VOTE_COUNT_PARAM_VALUE = "1000";
 
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
         HttpUrl url = request.httpUrl().newBuilder()
-                .addQueryParameter(API_KEY_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
+                .addQueryParameter(MIN_VOTE_COUNT_PARAM, MIN_VOTE_COUNT_PARAM_VALUE)
                 .build();
         request = request.newBuilder().url(url).build();
         return chain.proceed(request);

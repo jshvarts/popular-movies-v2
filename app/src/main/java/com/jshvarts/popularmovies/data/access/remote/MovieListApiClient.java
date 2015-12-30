@@ -1,4 +1,6 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.access.remote;
+
+import com.jshvarts.popularmovies.data.model.MovieResults;
 
 import javax.inject.Singleton;
 

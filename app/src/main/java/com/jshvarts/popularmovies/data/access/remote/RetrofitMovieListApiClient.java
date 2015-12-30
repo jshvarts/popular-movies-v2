@@ -1,30 +1,30 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.access.remote;
 
-import com.facebook.stetho.okhttp.StethoInterceptor;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jshvarts.popularmovies.data.model.MovieResults;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
 import retrofit.Call;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
-import retrofit.http.Path;
 
 /**
  * Retrofit implementation of the Movie Api Client.
  */
-public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
+public class RetrofitMovieListApiClient implements MovieListApiClient {
 
     private OkHttpClient client;
     private Retrofit retrofitInstance;
 
-    public RetrofitMovieDetailApiClient() {
+    public RetrofitMovieListApiClient() {
         client = new OkHttpClient();
 
-        // Add query param interceptor
+        // Add query param interceptors
         client.interceptors().add(new QueryParamApiKeyInterceptor());
+        client.interceptors().add(new QueryParamMinVoteCountInterceptor());
 
         // Add logging interceptor
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
@@ -46,12 +46,7 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
     }
 
     @Override
-    public Call<MovieDetails> movie(String id) {
-        return retrofitInstance.create(MovieDetailApiClient.class).movie(id);
-    }
-
-    @Override
-    public Call<MovieReviewCountResults> reviewCount(String id) {
-        return retrofitInstance.create(MovieDetailApiClient.class).reviewCount(id);
+    public Call<MovieResults> movies(String sortBy) {
+        return retrofitInstance.create(MovieListApiClient.class).movies(sortBy);
     }
 }

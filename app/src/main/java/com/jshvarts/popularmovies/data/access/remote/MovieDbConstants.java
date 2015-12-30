@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.access.remote;
 
 /**
  * Re-usable constants across MovieDb data-access components.

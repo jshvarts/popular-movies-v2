@@ -7,6 +7,6 @@
     <dimen name="movie_detail_release_date_margin_bottom">40dp</dimen>
     <dimen name="movie_detail_vote_average_text_size">24sp</dimen>
     <dimen name="movie_detail_overview_margin_top">25dp</dimen>
-    <dimen name="movie_detail_review_count_text_size">20sp</dimen>
+    <dimen name="movie_detail_review_data_text_size">20sp</dimen>
     <dimen name="movie_detail_review_count_margin_top">25dp</dimen>
 </resources>

@@ -1,4 +1,4 @@
-package com.jshvarts.popularmovies.data;
+package com.jshvarts.popularmovies.data.model;
 
 import com.google.gson.annotations.SerializedName;
 
