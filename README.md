@@ -1,6 +1,6 @@
 # Popular Movies App
 
-Welcome to the soon-to-be award-willing Popular Movies App. 
+Welcome to the soon-to-be award-willing Popular Movies Stage 2 App. 
 
 ## Before Building
 
