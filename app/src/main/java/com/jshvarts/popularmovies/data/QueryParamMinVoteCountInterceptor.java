@@ -9,7 +9,7 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 
 /**
- * Global API Key interceptor required to append apiKey for all movieDB requests.
+ * Min Vote request interceptor used by movieDB list requests.
  */
 public class QueryParamMinVoteCountInterceptor implements Interceptor {
     private final String MIN_VOTE_COUNT_PARAM = "vote_count.gte";
