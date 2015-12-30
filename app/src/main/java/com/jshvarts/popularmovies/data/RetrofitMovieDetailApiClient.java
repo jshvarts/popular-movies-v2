@@ -16,10 +16,8 @@ import retrofit.Retrofit;
  */
 public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
 
-    private final String BASE_API_URL = "http://api.themoviedb.org";
-
     private OkHttpClient client;
-    private MovieDetailApiClient movieDetailApiClient;
+    private Retrofit retrofitInstance;
 
     public RetrofitMovieDetailApiClient() {
         client = new OkHttpClient();
@@ -33,23 +31,21 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
         client.interceptors().add(loggingInterceptor);
 
         // Add stetho debug interceptor
-        client.networkInterceptors().add(new StethoInterceptor());
+        // client.networkInterceptors().add(new StethoInterceptor());
 
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_API_URL)
+        retrofitInstance = new Retrofit.Builder()
+                .baseUrl(MovieDbConstants.BASE_API_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build();
-
-        movieDetailApiClient = retrofit.create(MovieDetailApiClient.class);
     }
 
     @Override
     public Call<MovieDetails> movie(String id) {
-        return movieDetailApiClient.movie(id);
+        return retrofitInstance.create(MovieDetailApiClient.class).movie(id);
     }
 }
