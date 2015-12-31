@@ -5,7 +5,6 @@ import com.jshvarts.popularmovies.ui.MovieDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieListFragment;
 import com.jshvarts.popularmovies.ui.MovieReviewDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieReviewListFragment;
-import com.jshvarts.popularmovies.ui.MovieTrailersFragment;
 import com.jshvarts.popularmovies.ui.SettingsActivity;
 import com.jshvarts.popularmovies.ui.SettingsFragment;
 
@@ -31,7 +30,6 @@ public interface AppComponent {
     void inject(SettingsFragment fragment);
     void inject(MovieReviewListFragment fragment);
     void inject(MovieReviewDetailFragment fragment);
-    void inject(MovieTrailersFragment fragment);
 
     // adapters
     void inject(ImageAdapter adapter);

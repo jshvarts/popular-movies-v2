@@ -186,7 +186,7 @@ public class MovieListFragment extends Fragment {
         // save state
         this.movieList = movieList;
 
-        ListAdapter movieListAdapter = new ImageAdapter(getContext(), movieList);
+        ListAdapter movieListAdapter = new ImageAdapter(getActivity(), movieList);
         gridView.setAdapter(movieListAdapter);
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

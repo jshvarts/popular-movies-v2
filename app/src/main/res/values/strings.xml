@@ -16,4 +16,5 @@
     <!-- movie detail -->
     <string name="movie_detail_review_count_label">Reviews:</string>
     <string name="movie_detail_read_reviews_link"><u>Read &gt;&gt;</u></string>
+    <string name="movie_detail_trailer_heading">Trailers:</string>
 </resources>
