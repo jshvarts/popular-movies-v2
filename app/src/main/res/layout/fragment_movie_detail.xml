@@ -7,7 +7,7 @@
     <ScrollView
         android:id="@+id/movie_detail_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
@@ -95,6 +95,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/movie_detail_overview_margin_top" />
+
+            <TextView
+                android:id="@+id/trailer_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/movie_detail_trailer_heading"
+                android:textSize="@dimen/movie_detail_trailer_heading_text_size"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="invisible" />
+
+            <TableLayout
+                android:id="@+id/trailer_links"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1" />
 
         </LinearLayout>
 

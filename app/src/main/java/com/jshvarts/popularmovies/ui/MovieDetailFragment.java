@@ -2,15 +2,21 @@ package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,18 +27,23 @@ import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.model.MovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieReviewCount;
+import com.jshvarts.popularmovies.data.model.MovieTrailer;
+import com.jshvarts.popularmovies.data.model.MovieTrailerResults;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindDrawable;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
@@ -51,6 +62,8 @@ public class MovieDetailFragment extends Fragment {
     private static final String INSTANCE_STATE_MOVIE_DETAIL_KEY = "movieDetails";
 
     private static final String INSTANCE_STATE_REVIEW_COUNT_KEY = "reviewCount";
+
+    private static final String INSTANCE_STATE_TRAILERS_KEY = "trailers";
 
     private static final String MOVIE_DETAILS_UNAVAILABLE = "Unable to retrieve movie details. Please try again.";
 
@@ -93,6 +106,17 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.read_reviews_link)
     protected TextView readReviewsLink;
 
+    @Bind(R.id.trailer_heading)
+    protected TextView trailerHeadingText;
+
+    @Bind(R.id.trailer_links)
+    protected TableLayout trailerLinksTable;
+
+    @BindDrawable(R.drawable.play)
+    protected Drawable playDrawable;
+
+    private List<MovieTrailer> trailers;
+
     private MovieDetails movieDetails;
 
     private int reviewCount = REVIEW_COUNT_PENDING_LOOKUP;
@@ -107,6 +131,9 @@ public class MovieDetailFragment extends Fragment {
             if (savedInstanceState.containsKey(INSTANCE_STATE_REVIEW_COUNT_KEY)) {
                 reviewCount = savedInstanceState.getInt(INSTANCE_STATE_REVIEW_COUNT_KEY);
             }
+            if (savedInstanceState.containsKey(INSTANCE_STATE_TRAILERS_KEY)) {
+                trailers = savedInstanceState.getParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY);
+            }
         }
     }
 
@@ -117,6 +144,9 @@ public class MovieDetailFragment extends Fragment {
         }
         if (reviewCount != REVIEW_COUNT_PENDING_LOOKUP) {
             outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, reviewCount);
+        }
+        if (trailers != null) {
+            outState.putParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY, new ArrayList<>(trailers));
         }
         super.onSaveInstanceState(outState);
     }
@@ -173,9 +203,11 @@ public class MovieDetailFragment extends Fragment {
 
         // use state if available
         if (movieDetails != null
-                && REVIEW_COUNT_UNAVAILABLE != reviewCount) {
+                && REVIEW_COUNT_UNAVAILABLE != reviewCount
+                && trailers != null) {
             initializeMovieDetailsUI(movieDetails);
             initializeReviewCountUI(reviewCount);
+            initializeTrailersUI(trailers);
             return;
         }
 
@@ -193,7 +225,9 @@ public class MovieDetailFragment extends Fragment {
                     MovieDetails movieDetails = response.body();
                     if (movieDetails != null) {
                         initializeMovieDetailsUI(movieDetails);
+                        // movie details available. now look up review and trailers data
                         retrieveReviewCount(id);
+                        retrieveTrailers(id);
                     } else {
                         Log.e(LOG_TAG, "empty movie details returned.");
                         reportSystemError();
@@ -311,6 +345,95 @@ public class MovieDetailFragment extends Fragment {
         reviewCountText.setText(String.valueOf(reviewCount));
         if (reviewCount != REVIEW_COUNT_UNAVAILABLE) {
             readReviewsLink.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Checks to see if the movie trailers were preserved as part of instance state.
+     * If so, uses it to populate the view. Otherwise, makes an async call via Retrofit to get the trailers
+
+     * @param id
+     */
+    private void retrieveTrailers(String id) {
+
+        // use state if available
+        if (trailers != null) {
+            initializeTrailersUI(trailers);
+            return;
+        }
+
+        final Call<MovieTrailerResults> call = movieDetailApiClient.trailers(id);
+        call.enqueue(new Callback<MovieTrailerResults>() {
+
+            @Override
+            public void onResponse(Response<MovieTrailerResults> response, Retrofit retrofit) {
+
+                if (response.isSuccess()) {
+                    MovieTrailerResults trailerResults = response.body();
+                    if (trailerResults != null && trailerResults.getTrailers() != null) {
+                        initializeTrailersUI(trailerResults.getTrailers());
+                    } else {
+                        Log.e(LOG_TAG, "empty trailers results. perhaps this movie has no trailers?");
+                    }
+                } else {
+                    ResponseBody errorBody = response.errorBody();
+                    Log.e(LOG_TAG, "failed to get movie trailers. response code: "
+                            + response.code() + ", errorBody: " + errorBody);
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e(LOG_TAG, "failed to get movie trailers. " + t.getMessage());
+            }
+        });
+    }
+
+    private void initializeTrailersUI(List<MovieTrailer> trailers) {
+
+        // save state
+        this.trailers = trailers;
+
+        if (trailers.isEmpty()) {
+            Log.d(LOG_TAG, "no trailers available for movie with id " + movieDetails.getId());
+            return;
+        }
+
+        trailerHeadingText.setVisibility(View.VISIBLE);
+
+        LinearLayout.LayoutParams rowLayoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        rowLayoutParams.setMargins(0, 20, 0, 20);
+
+        TableRow tr;
+        ImageButton playButton;
+        TextView trailerName;
+        for (final MovieTrailer trailer : trailers) {
+
+            View.OnClickListener trailerOnClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(getActivity(), "play trailer " + trailer.getKey(), Toast.LENGTH_SHORT).show();
+                }
+            };
+
+            tr = new TableRow(getActivity());
+            tr.setLayoutParams(rowLayoutParams);
+            tr.setGravity(Gravity.CENTER_VERTICAL);
+
+            playButton = new ImageButton(getActivity());
+            playButton.setImageDrawable(playDrawable);
+            playButton.setOnClickListener(trailerOnClickListener);
+            tr.addView(playButton);
+
+            trailerName = new TextView(getActivity());
+            trailerName.setText(trailer.getName());
+            trailerName.setGravity(Gravity.CENTER_VERTICAL);
+            trailerName.setPadding(20, 0, 0, 0);
+            trailerName.setOnClickListener(trailerOnClickListener);
+
+            tr.addView(trailerName);
+            trailerLinksTable.addView(tr);
         }
     }
 
