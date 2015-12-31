@@ -1,8 +1,10 @@
 package com.jshvarts.popularmovies.ui;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -20,6 +22,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
@@ -59,6 +62,10 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
 
+    private static final String YOUTUBE_PROTOCOL = "vnd.youtube:";
+
+    private static final String YOUTUBE_HTTP_BASE_URL = "http://www.youtube.com/watch?v=";
+
     private static final String INSTANCE_STATE_MOVIE_DETAIL_KEY = "movieDetails";
 
     private static final String INSTANCE_STATE_REVIEW_COUNT_KEY = "reviewCount";
@@ -66,6 +73,9 @@ public class MovieDetailFragment extends Fragment {
     private static final String INSTANCE_STATE_TRAILERS_KEY = "trailers";
 
     private static final String MOVIE_DETAILS_UNAVAILABLE = "Unable to retrieve movie details. Please try again.";
+
+    private static final String UNABLE_TO_PLAY_TRAILER_MESSAGE =
+            "Unable to play trailer. Make sure you have either YouTube or a web browser installed.";
 
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
 
@@ -413,7 +423,8 @@ public class MovieDetailFragment extends Fragment {
             View.OnClickListener trailerOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getActivity(), "play trailer " + trailer.getKey(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "play trailer " + trailer.getKey(), Toast.LENGTH_SHORT).show();
+                    playTrailer(trailer.getKey());
                 }
             };
 
@@ -437,7 +448,31 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
+    /**
+     * Attempts playing a video in YouTube or web browser.
+     * Handles gracefully if unable to handle the intent.
+     *
+     * @param key
+     */
+    private void playTrailer(String key){
+        Preconditions.checkArgument(!TextUtils.isEmpty(key), "video key must passed in");
+
+        Intent intent;
+        try {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_PROTOCOL + key));
+            startActivity(intent);
+        } catch (ActivityNotFoundException youtubeAppNotFoundException) {
+            try {
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_HTTP_BASE_URL + key));
+                startActivity(intent);
+            } catch (ActivityNotFoundException webBrowserAppNotFoundException) {
+                Toast.makeText(getActivity(), UNABLE_TO_PLAY_TRAILER_MESSAGE, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+
     private void reportSystemError() {
-        Toast.makeText(getActivity(), MOVIE_DETAILS_UNAVAILABLE, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), MOVIE_DETAILS_UNAVAILABLE, Toast.LENGTH_LONG).show();
     }
 }
