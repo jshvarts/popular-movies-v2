@@ -13,13 +13,10 @@ public class MovieReview implements Parcelable {
 
     private final String content;
 
-    private final String url;
-
     public MovieReview(String id, String author, String content, String url) {
         this.id = id;
         this.author = author;
         this.content = content;
-        this.url = url;
     }
 
     public String getId() {
@@ -34,15 +31,10 @@ public class MovieReview implements Parcelable {
         return content;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
     protected MovieReview(Parcel in) {
         id = in.readString();
         author = in.readString();
         content = in.readString();
-        url = in.readString();
     }
 
     @Override
@@ -54,7 +46,6 @@ public class MovieReview implements Parcelable {
         dest.writeString(id);
         dest.writeString(author);
         dest.writeString(content);
-        dest.writeString(url);
     }
 
     public static final Creator<MovieReview> CREATOR = new Creator<MovieReview>() {
