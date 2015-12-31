@@ -156,7 +156,6 @@ public class MovieDetailFragment extends Fragment {
 
     @OnClick(R.id.read_reviews_link)
     protected void onReadReviewsLinkClick() {
-        Log.d(LOG_TAG, "on read reviews link click for movie id " + movieDetails.getId());
         Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
         moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA, String.valueOf(movieDetails.getId()));
         startActivity(moviewReviewsIntent);

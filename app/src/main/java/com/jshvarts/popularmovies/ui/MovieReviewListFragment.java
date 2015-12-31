@@ -1,6 +1,7 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -70,6 +72,9 @@ public class MovieReviewListFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        // set this for performance
+        reviewListRecyclerView.setHasFixedSize(true);
+
         RecyclerView.LayoutManager recyclerViewLayoutManager = new LinearLayoutManager(getActivity());
         reviewListRecyclerView.setLayoutManager(recyclerViewLayoutManager);
 
@@ -93,9 +98,6 @@ public class MovieReviewListFragment extends Fragment {
 
         // Inject dependencies of this fragment.
         ((PopularMoviesApplication) getActivity().getApplication()).getDaggerComponent().inject(this);
-
-        // set this for performance
-        reviewListRecyclerView.setHasFixedSize(true);
 
         return rootView;
     }
@@ -130,7 +132,7 @@ public class MovieReviewListFragment extends Fragment {
 
         // use state if available
         if (movieReviewList != null) {
-            //initializeAdapter(movieReviewList);
+            initializeAdapter(movieReviewList);
             return;
         }
 

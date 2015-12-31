@@ -18,7 +18,7 @@
         </activity>
 
         <activity android:name=".ui.MovieDetailActivity"
-            android:label="@string/title_activity_detail"
+            android:label="@string/title_activity_movie_detail"
             android:launchMode="singleTop"
             android:parentActivityName=".ui.MovieListActivity">
             <meta-data
@@ -35,11 +35,20 @@
         </activity>
 
         <activity android:name=".ui.MovieReviewListActivity"
-            android:label="@string/title_activity_detail"
+            android:label="@string/title_activity_reviews"
+            android:launchMode="singleTop"
             android:parentActivityName=".ui.MovieDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.MovieDetailActivity"/>
+        </activity>
+
+        <activity android:name=".ui.MovieReviewDetailActivity"
+            android:label="@string/title_activity_review_detail"
+            android:parentActivityName=".ui.MovieReviewListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MovieReviewListActivity"/>
         </activity>
     </application>
 
