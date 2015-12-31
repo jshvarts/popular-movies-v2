@@ -7,6 +7,7 @@ import com.jshvarts.popularmovies.data.model.MovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieReview;
 import com.jshvarts.popularmovies.data.model.MovieReviewCount;
 import com.jshvarts.popularmovies.data.model.MovieReviewResults;
+import com.jshvarts.popularmovies.data.model.MovieTrailerResults;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
@@ -66,5 +67,10 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
     @Override
     public Call<MovieReview> review(@Path("id") String reviewId) {
         return retrofitInstance.create(MovieDetailApiClient.class).review(reviewId);
+    }
+
+    @Override
+    public Call<MovieTrailerResults> trailers(@Path("id") String movieId) {
+        return retrofitInstance.create(MovieDetailApiClient.class).trailers(movieId);
     }
 }
