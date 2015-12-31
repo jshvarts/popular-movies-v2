@@ -75,7 +75,6 @@ public class MovieReviewListFragment extends Fragment {
 
         RecyclerView.LayoutManager recyclerViewLayoutManager = new LinearLayoutManager(getActivity());
         reviewListRecyclerView.setLayoutManager(recyclerViewLayoutManager);
-
     }
 
     @Override

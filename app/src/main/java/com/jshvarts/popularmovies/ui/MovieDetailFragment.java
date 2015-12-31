@@ -93,9 +93,9 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.read_reviews_link)
     protected TextView readReviewsLink;
 
-    protected MovieDetails movieDetails;
+    private MovieDetails movieDetails;
 
-    protected int reviewCount = REVIEW_COUNT_PENDING_LOOKUP;
+    private int reviewCount = REVIEW_COUNT_PENDING_LOOKUP;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,8 +112,10 @@ public class MovieDetailFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, movieDetails);
-        if (REVIEW_COUNT_PENDING_LOOKUP != reviewCount) {
+        if (movieDetails != null) {
+            outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, movieDetails);
+        }
+        if (reviewCount != REVIEW_COUNT_PENDING_LOOKUP) {
             outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, reviewCount);
         }
         super.onSaveInstanceState(outState);
@@ -170,7 +172,8 @@ public class MovieDetailFragment extends Fragment {
     private void retrieveMovie(final String id) {
 
         // use state if available
-        if (movieDetails != null && REVIEW_COUNT_UNAVAILABLE != reviewCount) {
+        if (movieDetails != null
+                && REVIEW_COUNT_UNAVAILABLE != reviewCount) {
             initializeMovieDetailsUI(movieDetails);
             initializeReviewCountUI(reviewCount);
             return;

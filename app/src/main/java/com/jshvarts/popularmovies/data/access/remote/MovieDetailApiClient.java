@@ -4,6 +4,7 @@ import com.jshvarts.popularmovies.data.model.MovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieReview;
 import com.jshvarts.popularmovies.data.model.MovieReviewCount;
 import com.jshvarts.popularmovies.data.model.MovieReviewResults;
+import com.jshvarts.popularmovies.data.model.MovieTrailerResults;
 
 import javax.inject.Singleton;
 
@@ -27,5 +28,8 @@ public interface MovieDetailApiClient {
 
     @GET("/3/review/{id}")
     Call<MovieReview> review(@Path("id") String reviewId);
+
+    @GET("/3/movie/{id}/videos")
+    Call<MovieTrailerResults> trailers(@Path("id") String movieId);
 }
 
