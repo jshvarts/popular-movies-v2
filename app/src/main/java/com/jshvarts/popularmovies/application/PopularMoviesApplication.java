@@ -2,9 +2,11 @@ package com.jshvarts.popularmovies.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.StrictMode;
 import android.support.annotation.VisibleForTesting;
 
 import com.facebook.stetho.Stetho;
+import com.jshvarts.popularmovies.BuildConfig;
 import com.jshvarts.popularmovies.application.di.AppComponent;
 import com.jshvarts.popularmovies.application.di.AppModule;
 import com.jshvarts.popularmovies.application.di.DaggerAppComponent;
@@ -27,6 +29,19 @@ public class PopularMoviesApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Stetho.initializeWithDefaults(this);
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+                    .detectNetwork()
+                    .penaltyLog()
+                    .build());
+            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                    .detectLeakedSqlLiteObjects()
+                    .detectLeakedClosableObjects()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build());
+        }
 
         //initialize dependency-injection object graph
         appComponent = buildDaggerComponent();

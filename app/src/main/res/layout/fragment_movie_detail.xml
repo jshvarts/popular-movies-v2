@@ -16,17 +16,21 @@
 
             <TextView
                 android:id="@+id/original_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/movie_detail_title_text_size"
-                android:textStyle="bold"
-                android:layout_marginTop="@dimen/movie_detail_title_margin_top_bottom"
-                android:layout_marginBottom="@dimen/movie_detail_title_margin_top_bottom"/>
+                android:paddingLeft="@dimen/movie_detail_title_padding_left"
+                android:paddingTop="@dimen/movie_detail_title_padding_top_bottom"
+                android:paddingBottom="@dimen/movie_detail_title_padding_top_bottom"
+                android:layout_marginBottom="@dimen/movie_detail_title_margin_top_bottom"
+                android:background="@color/original_movie_title_background_color"
+                android:textColor="@android:color/white" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginLeft="25dp">
 
                 <ImageView
                     android:id="@+id/poster_image"
@@ -34,7 +38,6 @@
                     android:layout_height="wrap_content" />
 
                 <LinearLayout
-                    android:id="@+id/asd"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -90,29 +93,37 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/overview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/movie_detail_overview_margin_top" />
-
-            <TextView
-                android:id="@+id/trailer_heading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/movie_detail_trailer_heading"
-                android:textSize="@dimen/movie_detail_trailer_heading_text_size"
-                android:textStyle="bold"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:visibility="invisible" />
-
-            <TableLayout
-                android:id="@+id/trailer_links"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:stretchColumns="1" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_marginLeft="15dp">
 
+                <TextView
+                    android:id="@+id/overview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/movie_detail_overview_text_size"
+                    android:layout_marginTop="@dimen/movie_detail_overview_margin_top" />
+
+                <TextView
+                    android:id="@+id/trailer_heading"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/movie_detail_trailer_heading"
+                    android:textSize="@dimen/movie_detail_trailer_heading_text_size"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="invisible" />
+
+                <TableLayout
+                    android:id="@+id/trailer_links"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:stretchColumns="1" />
+
+            </LinearLayout>
         </LinearLayout>
 
     </ScrollView>

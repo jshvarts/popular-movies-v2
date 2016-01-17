@@ -25,9 +25,10 @@ import android.widget.Toast;
 import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
-import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
+import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
+import com.jshvarts.popularmovies.data.model.CompositeMovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieReviewCount;
 import com.jshvarts.popularmovies.data.model.MovieTrailer;
@@ -79,10 +80,6 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
 
-    private static final int REVIEW_COUNT_PENDING_LOOKUP = -1;
-
-    private static final int REVIEW_COUNT_UNAVAILABLE = 0;
-
     @Inject
     protected MovieDetailApiClient movieDetailApiClient;
 
@@ -125,38 +122,38 @@ public class MovieDetailFragment extends Fragment {
     @BindDrawable(R.drawable.play)
     protected Drawable playDrawable;
 
-    private List<MovieTrailer> trailers;
-
-    private MovieDetails movieDetails;
-
-    private int reviewCount = REVIEW_COUNT_PENDING_LOOKUP;
+    private CompositeMovieDetails compositeMovieDetails;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
+            compositeMovieDetails = new CompositeMovieDetails();
             if (savedInstanceState.containsKey(INSTANCE_STATE_MOVIE_DETAIL_KEY)) {
-                movieDetails = savedInstanceState.getParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY);
+                MovieDetails movieDetails = savedInstanceState.getParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY);
+                compositeMovieDetails.setMovieDetails(movieDetails);
             }
             if (savedInstanceState.containsKey(INSTANCE_STATE_REVIEW_COUNT_KEY)) {
-                reviewCount = savedInstanceState.getInt(INSTANCE_STATE_REVIEW_COUNT_KEY);
+                int reviewCount = savedInstanceState.getInt(INSTANCE_STATE_REVIEW_COUNT_KEY);
+                compositeMovieDetails.setReviewCount(reviewCount);
             }
             if (savedInstanceState.containsKey(INSTANCE_STATE_TRAILERS_KEY)) {
-                trailers = savedInstanceState.getParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY);
+                List<MovieTrailer> trailers = savedInstanceState.getParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY);
+                compositeMovieDetails.setMovieTrailerList(trailers);
             }
         }
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (movieDetails != null) {
-            outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, movieDetails);
+        if (compositeMovieDetails.getMovieDetails() != null) {
+            outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, compositeMovieDetails.getMovieDetails());
         }
-        if (reviewCount != REVIEW_COUNT_PENDING_LOOKUP) {
-            outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, reviewCount);
+        if (compositeMovieDetails.getReviewCount() != CompositeMovieDetails.REVIEW_COUNT_PENDING_LOOKUP) {
+            outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, compositeMovieDetails.getReviewCount());
         }
-        if (trailers != null) {
-            outState.putParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY, new ArrayList<>(trailers));
+        if (compositeMovieDetails.getMovieTrailerList() != null) {
+            outState.putParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY, new ArrayList<>(compositeMovieDetails.getMovieTrailerList()));
         }
         super.onSaveInstanceState(outState);
     }
@@ -191,15 +188,18 @@ public class MovieDetailFragment extends Fragment {
         refWatcher.watch(this);
     }
 
-    public void onEventMainThread(MovieDetailsRequestedEvent event) {
+    public void onEventMainThread(MovieDetailsRequestRoutedEvent event) {
         Log.d(LOG_TAG, "content id requested: " + event.getId());
         retrieveMovie(event.getId());
     }
 
     @OnClick(R.id.read_reviews_link)
     protected void onReadReviewsLinkClick() {
+        Preconditions.checkNotNull(compositeMovieDetails);
+        Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
         Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
-        moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA, String.valueOf(movieDetails.getId()));
+        moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA,
+                String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
         startActivity(moviewReviewsIntent);
     }
 
@@ -211,15 +211,16 @@ public class MovieDetailFragment extends Fragment {
      */
     private void retrieveMovie(final String id) {
 
-        // use state if available
-        if (movieDetails != null
-                && REVIEW_COUNT_UNAVAILABLE != reviewCount
-                && trailers != null) {
-            initializeMovieDetailsUI(movieDetails);
-            initializeReviewCountUI(reviewCount);
-            initializeTrailersUI(trailers);
-            return;
+        if (!isNewMovieRequest(id)) {
+            // use state if available
+            if (compositeMovieDetails != null) {
+                initializeMovieDetailsUI(compositeMovieDetails.getMovieDetails());
+                initializeReviewCountUI(compositeMovieDetails.getReviewCount());
+                initializeTrailersUI(compositeMovieDetails.getMovieTrailerList());
+                return;
+            }
         }
+        compositeMovieDetails = new CompositeMovieDetails();
 
         progressBar.setVisibility(View.VISIBLE);
 
@@ -260,6 +261,17 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
+    private boolean isNewMovieRequest(String id) {
+        Preconditions.checkArgument(TextUtils.isDigitsOnly(id), "invalid id passed in");
+        if (compositeMovieDetails == null) {
+            return true;
+        }
+        if (compositeMovieDetails.getMovieDetails().getId() != Integer.parseInt(id)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Checks to see if the movie review count was preserved as part of instance state.
      * If so, uses it to populate the view. Otherwise, makes an async call via Retrofit to get the review count
@@ -267,10 +279,11 @@ public class MovieDetailFragment extends Fragment {
      * @param id
      */
     private void retrieveReviewCount(String id) {
-
+        Preconditions.checkNotNull(compositeMovieDetails);
+        Preconditions.checkArgument(id != null);
         // use state if available
-        if (REVIEW_COUNT_PENDING_LOOKUP != reviewCount) {
-            initializeReviewCountUI(reviewCount);
+        if (CompositeMovieDetails.REVIEW_COUNT_PENDING_LOOKUP != compositeMovieDetails.getReviewCount()) {
+            initializeReviewCountUI(compositeMovieDetails.getReviewCount());
             return;
         }
 
@@ -295,7 +308,7 @@ public class MovieDetailFragment extends Fragment {
                     Log.e(LOG_TAG, "failed to get movie review count. response code: "
                             + response.code() + ", errorBody: " + errorBody);
 
-                    reviewCount = REVIEW_COUNT_UNAVAILABLE;
+                    compositeMovieDetails.setReviewCount(CompositeMovieDetails.REVIEW_COUNT_UNAVAILABLE);
                 }
             }
 
@@ -303,7 +316,7 @@ public class MovieDetailFragment extends Fragment {
             public void onFailure(Throwable t) {
                 Log.e(LOG_TAG, "failed to get movie review count. " + t.getMessage());
 
-                reviewCount = REVIEW_COUNT_UNAVAILABLE;
+                compositeMovieDetails.setReviewCount(CompositeMovieDetails.REVIEW_COUNT_UNAVAILABLE);
             }
         });
     }
@@ -328,9 +341,13 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void initializeMovieDetailsUI(MovieDetails movieDetails) {
+        Preconditions.checkNotNull(compositeMovieDetails);
+        Preconditions.checkNotNull(movieDetails);
 
         // save state
-        this.movieDetails = movieDetails;
+        compositeMovieDetails.setMovieDetails(movieDetails);
+
+        Log.d(getClass().getSimpleName(), "HERE " + movieDetails.getId());
 
         String imageUrl = imageUtils.getImageUrl(movieDetails.getPosterPath());
         Picasso.with(getActivity()).load(imageUrl).into(posterImage);
@@ -346,14 +363,15 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void initializeReviewCountUI(int reviewCount) {
+        Preconditions.checkNotNull(compositeMovieDetails);
 
         // save state
-        this.reviewCount = reviewCount;
+        compositeMovieDetails.setReviewCount(reviewCount);
 
         // display review count label and value after the value is set
         reviewCountLabel.setVisibility(View.VISIBLE);
         reviewCountText.setText(String.valueOf(reviewCount));
-        if (reviewCount != REVIEW_COUNT_UNAVAILABLE) {
+        if (reviewCount != CompositeMovieDetails.REVIEW_COUNT_UNAVAILABLE) {
             readReviewsLink.setVisibility(View.VISIBLE);
         }
     }
@@ -365,10 +383,11 @@ public class MovieDetailFragment extends Fragment {
      * @param id
      */
     private void retrieveTrailers(String id) {
+        Preconditions.checkNotNull(compositeMovieDetails);
 
         // use state if available
-        if (trailers != null) {
-            initializeTrailersUI(trailers);
+        if (compositeMovieDetails.getMovieTrailerList() != null) {
+            initializeTrailersUI(compositeMovieDetails.getMovieTrailerList());
             return;
         }
 
@@ -400,16 +419,20 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private void initializeTrailersUI(List<MovieTrailer> trailers) {
+        Preconditions.checkNotNull(compositeMovieDetails);
+        Preconditions.checkNotNull(trailers);
 
         // save state
-        this.trailers = trailers;
+        compositeMovieDetails.setMovieTrailerList(trailers);
 
         if (trailers.isEmpty()) {
-            Log.d(LOG_TAG, "no trailers available for movie with id " + movieDetails.getId());
+            Log.d(LOG_TAG, "no trailers available for movie with id " + compositeMovieDetails.getMovieDetails().getId());
             return;
         }
 
         trailerHeadingText.setVisibility(View.VISIBLE);
+
+        trailerLinksTable.removeAllViews();
 
         LinearLayout.LayoutParams rowLayoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -455,7 +478,7 @@ public class MovieDetailFragment extends Fragment {
      * @param key
      */
     private void playTrailer(String key){
-        Preconditions.checkArgument(!TextUtils.isEmpty(key), "video key must passed in");
+        Preconditions.checkArgument(!TextUtils.isEmpty(key));
 
         Intent intent;
         try {
