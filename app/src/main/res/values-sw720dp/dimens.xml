@@ -1,12 +1,14 @@
 <resources>
     <dimen name="activity_horizontal_margin">32dp</dimen>
-    <dimen name="movie_detail_title_text_size">45sp</dimen>
-    <dimen name="movie_detail_title_margin_top_bottom">30dp</dimen>
-    <dimen name="movie_detail_metadata_margin_left">30dp</dimen>
+    <dimen name="movie_detail_title_text_size">40sp</dimen>
+    <dimen name="movie_detail_title_margin_top_bottom">4dp</dimen>
+    <dimen name="movie_detail_title_padding_top_bottom">40dp</dimen>
+    <dimen name="movie_detail_metadata_margin_left">40dp</dimen>
     <dimen name="movie_detail_release_date_text_size">32sp</dimen>
     <dimen name="movie_detail_release_date_margin_bottom">40dp</dimen>
     <dimen name="movie_detail_vote_average_text_size">24sp</dimen>
     <dimen name="movie_detail_overview_margin_top">25dp</dimen>
+    <dimen name="movie_detail_overview_text_size">22sp</dimen>
     <dimen name="movie_detail_review_data_text_size">20sp</dimen>
     <dimen name="movie_detail_review_count_margin_top">25dp</dimen>
 </resources>

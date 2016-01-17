@@ -2,13 +2,16 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="movie_detail_title_text_size">35sp</dimen>
-    <dimen name="movie_detail_title_margin_top_bottom">20dp</dimen>
+    <dimen name="movie_detail_title_text_size">25sp</dimen>
+    <dimen name="movie_detail_title_margin_top_bottom">2dp</dimen>
+    <dimen name="movie_detail_title_padding_left">20dp</dimen>
+    <dimen name="movie_detail_title_padding_top_bottom">20dp</dimen>
     <dimen name="movie_detail_metadata_margin_left">20dp</dimen>
     <dimen name="movie_detail_release_date_text_size">24sp</dimen>
     <dimen name="movie_detail_release_date_margin_bottom">20dp</dimen>
     <dimen name="movie_detail_vote_average_text_size">18sp</dimen>
     <dimen name="movie_detail_overview_margin_top">15dp</dimen>
+    <dimen name="movie_detail_overview_text_size">15sp</dimen>
     <dimen name="movie_detail_review_data_text_size">15sp</dimen>
     <dimen name="movie_detail_review_count_margin_top">15dp</dimen>
     <dimen name="movie_detail_review_count_margin_leftright">4dp</dimen>

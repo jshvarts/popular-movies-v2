@@ -1,7 +1,6 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
+import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.model.Movie;
@@ -134,6 +134,7 @@ public class MovieListFragment extends Fragment {
         // use state if available
         if (movieList != null) {
             initializeAdapter(movieList);
+            initializeMovieDetailCriteria(movieList);
             return;
         }
 
@@ -155,6 +156,7 @@ public class MovieListFragment extends Fragment {
                             && results.getMovies() != null
                             && !results.getMovies().isEmpty()) {
                         initializeAdapter(results.getMovies());
+                        initializeMovieDetailCriteria(results.getMovies());
                     } else {
                         Log.e(LOG_TAG, "empty movie list returned.");
                         reportSystemError();
@@ -193,11 +195,17 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "item clicked: " + id);
-                Intent detailIntent = new Intent(getActivity(), MovieDetailActivity.class);
-                detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, String.valueOf(id));
-                startActivity(detailIntent);
+                EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(id)));
             }
         });
+    }
+
+    /**
+     * Initialize the detail screen with the first movie listed if the movie detail fragment is
+     * defined in this activity.
+     */
+    private void initializeMovieDetailCriteria(List<Movie> movieList) {
+        EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieList.get(0).getId())));
     }
 
     private void reportSystemError() {
