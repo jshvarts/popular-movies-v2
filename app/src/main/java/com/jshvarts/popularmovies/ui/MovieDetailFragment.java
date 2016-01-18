@@ -1,8 +1,10 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
+import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.model.CompositeMovieDetails;
@@ -85,6 +88,9 @@ public class MovieDetailFragment extends Fragment {
 
     @Inject
     protected ImageUtils imageUtils;
+
+    @Inject
+    protected PopMoviesDbHelper dbHelper;
 
     @Bind(R.id.progress_bar)
     protected ProgressBar progressBar;
@@ -202,6 +208,25 @@ public class MovieDetailFragment extends Fragment {
         moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA,
                 String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
         startActivity(moviewReviewsIntent);
+    }
+
+    @OnClick(R.id.mark_as_favorite_button)
+    protected void onMarkAsFavoriteButtonClick() {
+        Preconditions.checkNotNull(compositeMovieDetails);
+        Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
+
+        ContentValues movieFavoritelValues = new ContentValues();
+        movieFavoritelValues.put("movie_id", compositeMovieDetails.getMovieDetails().getId());
+        movieFavoritelValues.put("movie_title", compositeMovieDetails.getMovieDetails().getOriginalTitle());
+        movieFavoritelValues.put("poster_path", compositeMovieDetails.getMovieDetails().getPosterPath());
+        dbHelper.getWritableDatabase().insert(PopMoviesDbHelper.TABLE_FAVORITES, null, movieFavoritelValues);
+
+        Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.getSelectAllFavorites(), null);
+        while(c.moveToNext()) {
+            Log.d(getClass().getSimpleName(), "id found: " + c.getInt(0));
+            Log.d(getClass().getSimpleName(), "title found: " + c.getString(1));
+            Log.d(getClass().getSimpleName(), "poster_path found: " + c.getString(2));
+        }
     }
 
     /**
@@ -491,7 +516,6 @@ public class MovieDetailFragment extends Fragment {
             }
         }
     }
-
 
     private void reportSystemError() {
         Toast.makeText(getActivity(), MOVIE_DETAILS_UNAVAILABLE, Toast.LENGTH_LONG).show();

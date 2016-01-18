@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
+import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.model.Movie;
@@ -55,6 +56,9 @@ public class MovieListFragment extends Fragment {
 
     @Inject
     protected SharedPreferences sharedPreferences;
+
+    @Inject
+    protected PopMoviesDbHelper dbHelper;
 
     @Bind(R.id.movie_list_gridview)
     protected GridView gridView;
