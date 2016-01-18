@@ -186,10 +186,10 @@ public class MovieDetailFragment extends Fragment {
         super.onDestroy();
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
+        ButterKnife.unbind(this);
     }
 
     public void onEventMainThread(MovieDetailsRequestRoutedEvent event) {
-        Log.d(LOG_TAG, "content id requested: " + event.getId());
         retrieveMovie(event.getId());
     }
 
