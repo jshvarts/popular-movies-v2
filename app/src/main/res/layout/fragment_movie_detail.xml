@@ -77,20 +77,30 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/movie_detail_review_count_label"
-                                android:textSize="@dimen/movie_detail_review_data_text_size"
                                 android:visibility="invisible"
+                                android:textAllCaps="true"
                                 android:textColor="@android:color/white" />
 
                             <TextView
                                 android:id="@+id/review_count"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textSize="@dimen/movie_detail_review_data_text_size"
                                 android:layout_marginLeft="@dimen/movie_detail_review_count_margin_leftright"
                                 android:layout_marginRight="@dimen/movie_detail_review_count_margin_leftright"
                                 android:textColor="@android:color/white" />
                         </LinearLayout>
+
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/mark_as_favorite_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_bg"
+                        android:textColor="@android:color/white"
+                        android:text="Mark as\nfavorite"
+                        android:textAllCaps="true"
+                        android:layout_marginTop="20dp" />
 
                 </LinearLayout>
 
