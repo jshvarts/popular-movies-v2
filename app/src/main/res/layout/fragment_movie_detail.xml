@@ -64,29 +64,32 @@
                         android:orientation="horizontal"
                         android:layout_marginTop="@dimen/movie_detail_review_count_margin_top">
 
-                        <TextView
-                            android:id="@+id/review_count_label"
+                        <LinearLayout
+                            android:id="@+id/reviews_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/movie_detail_review_count_label"
-                            android:textSize="@dimen/movie_detail_review_data_text_size"
-                            android:visibility="invisible" />
+                            android:orientation="horizontal"
+                            android:background="@drawable/button_bg"
+                            android:padding="5dp">
 
-                        <TextView
-                            android:id="@+id/review_count"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/movie_detail_review_data_text_size"
-                            android:layout_marginLeft="@dimen/movie_detail_review_count_margin_leftright"
-                            android:layout_marginRight="@dimen/movie_detail_review_count_margin_leftright"/>
+                            <TextView
+                                android:id="@+id/review_count_label"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/movie_detail_review_count_label"
+                                android:textSize="@dimen/movie_detail_review_data_text_size"
+                                android:visibility="invisible"
+                                android:textColor="@android:color/white" />
 
-                        <TextView
-                            android:id="@+id/read_reviews_link"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/movie_detail_read_reviews_link"
-                            android:textSize="@dimen/movie_detail_review_data_text_size"
-                            android:visibility="gone" />
+                            <TextView
+                                android:id="@+id/review_count"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="@dimen/movie_detail_review_data_text_size"
+                                android:layout_marginLeft="@dimen/movie_detail_review_count_margin_leftright"
+                                android:layout_marginRight="@dimen/movie_detail_review_count_margin_leftright"
+                                android:textColor="@android:color/white" />
+                        </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>

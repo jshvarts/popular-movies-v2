@@ -110,9 +110,6 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.review_count)
     protected TextView reviewCountText;
 
-    @Bind(R.id.read_reviews_link)
-    protected TextView readReviewsLink;
-
     @Bind(R.id.trailer_heading)
     protected TextView trailerHeadingText;
 
@@ -193,10 +190,14 @@ public class MovieDetailFragment extends Fragment {
         retrieveMovie(event.getId());
     }
 
-    @OnClick(R.id.read_reviews_link)
-    protected void onReadReviewsLinkClick() {
+    @OnClick(R.id.reviews_button)
+    protected void onReviewsButtonClick() {
         Preconditions.checkNotNull(compositeMovieDetails);
         Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
+        if (compositeMovieDetails.getReviewCount() <= 0) {
+            // no reviews to show
+            return;
+        }
         Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
         moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA,
                 String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
@@ -370,10 +371,7 @@ public class MovieDetailFragment extends Fragment {
 
         // display review count label and value after the value is set
         reviewCountLabel.setVisibility(View.VISIBLE);
-        reviewCountText.setText(String.valueOf(reviewCount));
-        if (reviewCount != CompositeMovieDetails.REVIEW_COUNT_UNAVAILABLE) {
-            readReviewsLink.setVisibility(View.VISIBLE);
-        }
+        reviewCountText.setText("("+String.valueOf(reviewCount)+")");
     }
 
     /**
