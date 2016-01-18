@@ -30,6 +30,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindBool;
 import butterknife.BindString;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
@@ -63,6 +64,9 @@ public class MovieListFragment extends Fragment {
 
     @BindString(R.string.pref_sort_by_key)
     protected String prefSortByKey;
+
+    @BindBool(R.bool.dual_pane)
+    protected boolean isDualPane;
 
     private List<Movie> movieList;
 
@@ -116,6 +120,7 @@ public class MovieListFragment extends Fragment {
         super.onDestroy();
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
+        ButterKnife.unbind(this);
     }
 
     public void onEventMainThread(SharedPrefUpdateEvent event) {
@@ -202,9 +207,12 @@ public class MovieListFragment extends Fragment {
 
     /**
      * Initialize the detail screen with the first movie listed if the movie detail fragment is
-     * defined in this activity.
+     * defined in this activity's layout.
      */
     private void initializeMovieDetailCriteria(List<Movie> movieList) {
+        if (!isDualPane) {
+            return;
+        }
         EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieList.get(0).getId())));
     }
 
