@@ -9,12 +9,15 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,6 +54,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.BindDrawable;
+import butterknife.BindString;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
@@ -116,6 +120,9 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.review_count)
     protected TextView reviewCountText;
 
+    @Bind(R.id.favorite_button)
+    protected Button favoriteButton;
+
     @Bind(R.id.trailer_heading)
     protected TextView trailerHeadingText;
 
@@ -124,6 +131,12 @@ public class MovieDetailFragment extends Fragment {
 
     @BindDrawable(R.drawable.play)
     protected Drawable playDrawable;
+
+    @BindString(R.string.button_text_mark_as_favorite)
+    protected String buttonTextMarkAsFavorite;
+
+    @BindString(R.string.button_text_favorite)
+    protected String buttonTextFavorite;
 
     private CompositeMovieDetails compositeMovieDetails;
 
@@ -149,14 +162,16 @@ public class MovieDetailFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        if (compositeMovieDetails.getMovieDetails() != null) {
-            outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, compositeMovieDetails.getMovieDetails());
-        }
-        if (compositeMovieDetails.getReviewCount() != CompositeMovieDetails.REVIEW_COUNT_PENDING_LOOKUP) {
-            outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, compositeMovieDetails.getReviewCount());
-        }
-        if (compositeMovieDetails.getMovieTrailerList() != null) {
-            outState.putParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY, new ArrayList<>(compositeMovieDetails.getMovieTrailerList()));
+        if (compositeMovieDetails != null) {
+            if (compositeMovieDetails.getMovieDetails() != null) {
+                outState.putParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY, compositeMovieDetails.getMovieDetails());
+            }
+            if (compositeMovieDetails.getReviewCount() != CompositeMovieDetails.REVIEW_COUNT_PENDING_LOOKUP) {
+                outState.putInt(INSTANCE_STATE_REVIEW_COUNT_KEY, compositeMovieDetails.getReviewCount());
+            }
+            if (compositeMovieDetails.getMovieTrailerList() != null) {
+                outState.putParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY, new ArrayList<>(compositeMovieDetails.getMovieTrailerList()));
+            }
         }
         super.onSaveInstanceState(outState);
     }
@@ -184,7 +199,7 @@ public class MovieDetailFragment extends Fragment {
         super.onDetach();
     }
 
-    @Override
+        @Override
     public void onDestroy() {
         super.onDestroy();
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
@@ -196,7 +211,7 @@ public class MovieDetailFragment extends Fragment {
         retrieveMovie(event.getId());
     }
 
-    @OnClick(R.id.reviews_button)
+    @OnClick({R.id.review_count_label, R.id.review_count})
     protected void onReviewsButtonClick() {
         Preconditions.checkNotNull(compositeMovieDetails);
         Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
@@ -210,23 +225,26 @@ public class MovieDetailFragment extends Fragment {
         startActivity(moviewReviewsIntent);
     }
 
-    @OnClick(R.id.mark_as_favorite_button)
+    @OnClick(R.id.favorite_button)
     protected void onMarkAsFavoriteButtonClick() {
         Preconditions.checkNotNull(compositeMovieDetails);
         Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
 
         ContentValues movieFavoritelValues = new ContentValues();
-        movieFavoritelValues.put("movie_id", compositeMovieDetails.getMovieDetails().getId());
-        movieFavoritelValues.put("movie_title", compositeMovieDetails.getMovieDetails().getOriginalTitle());
-        movieFavoritelValues.put("poster_path", compositeMovieDetails.getMovieDetails().getPosterPath());
+        movieFavoritelValues.put(PopMoviesDbHelper.MOVIE_ID, compositeMovieDetails.getMovieDetails().getId());
+        movieFavoritelValues.put(PopMoviesDbHelper.MOVIE_TITLE, compositeMovieDetails.getMovieDetails().getOriginalTitle());
+        movieFavoritelValues.put(PopMoviesDbHelper.POSTER_PATH, compositeMovieDetails.getMovieDetails().getPosterPath());
         dbHelper.getWritableDatabase().insert(PopMoviesDbHelper.TABLE_FAVORITES, null, movieFavoritelValues);
 
-        Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.getSelectAllFavorites(), null);
+        toggleFavoriteButton(true);
+
+        Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.QUERY_FAVORITES, null);
         while(c.moveToNext()) {
             Log.d(getClass().getSimpleName(), "id found: " + c.getInt(0));
             Log.d(getClass().getSimpleName(), "title found: " + c.getString(1));
             Log.d(getClass().getSimpleName(), "poster_path found: " + c.getString(2));
         }
+        c.close();
     }
 
     /**
@@ -386,6 +404,12 @@ public class MovieDetailFragment extends Fragment {
         if (!TextUtils.isEmpty(releaseYear)) {
             releaseDate.setText(releaseYear);
         }
+
+        if (isMovieFavorite(movieDetails.getId())) {
+            toggleFavoriteButton(true);
+        } else {
+            toggleFavoriteButton(false);
+        }
     }
 
     private void initializeReviewCountUI(int reviewCount) {
@@ -394,11 +418,48 @@ public class MovieDetailFragment extends Fragment {
         // save state
         compositeMovieDetails.setReviewCount(reviewCount);
 
-        // display review count label and value after the value is set
-        reviewCountLabel.setVisibility(View.VISIBLE);
-        reviewCountText.setText("("+String.valueOf(reviewCount)+")");
+        SpannableString spannableReviewCount = new SpannableString("(" + String.valueOf(reviewCount) + ")");
+        spannableReviewCount.setSpan(new UnderlineSpan(), 0, spannableReviewCount.length(), 0);
+        reviewCountText.setText(spannableReviewCount);
     }
 
+    private boolean isMovieFavorite(int movieId) {
+        Cursor c = dbHelper.getReadableDatabase().query(PopMoviesDbHelper.TABLE_FAVORITES,
+                new String[] {PopMoviesDbHelper.MOVIE_ID},
+                PopMoviesDbHelper.MOVIE_ID + "=?",
+                new String[] {String.valueOf(movieId)},
+                null,
+                null,
+                null);
+
+        if (c.getCount() == 0) {
+            toggleFavoriteButton(false);
+            c.close();
+            return false;
+        }
+        while (c.moveToNext()) {
+            Log.d(getClass().getSimpleName(), "favorite id found: " + c.getInt(0));
+            toggleFavoriteButton(true);
+            if (!c.isLast()) {
+                Log.e(getClass().getSimpleName(),
+                        "more than one value returned for movie id " + compositeMovieDetails.getMovieDetails().getId());
+            }
+            c.close();
+            return true;
+        }
+        c.close();
+        return false;
+    }
+
+    private void toggleFavoriteButton(boolean isFavorite) {
+        if (isFavorite) {
+            favoriteButton.setText(buttonTextFavorite);
+            favoriteButton.setEnabled(false);
+        } else {
+            favoriteButton.setText(buttonTextMarkAsFavorite);
+            favoriteButton.setEnabled(true);
+        }
+    }
     /**
      * Checks to see if the movie trailers were preserved as part of instance state.
      * If so, uses it to populate the view. Otherwise, makes an async call via Retrofit to get the trailers

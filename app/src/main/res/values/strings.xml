@@ -14,6 +14,8 @@
     <string name="pref_sort_by_vote_average">vote_average.desc</string>
 
     <!-- movie detail -->
-    <string name="movie_detail_review_count_label">Reviews</string>
+    <string name="movie_detail_review_count_label"><u>Reviews</u></string>
     <string name="movie_detail_trailer_heading">Trailers:</string>
+    <string name="button_text_mark_as_favorite">Mark as\nfavorite</string>
+    <string name="button_text_favorite">Favorite</string>
 </resources>

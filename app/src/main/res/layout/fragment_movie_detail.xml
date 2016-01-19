@@ -64,41 +64,28 @@
                         android:orientation="horizontal"
                         android:layout_marginTop="@dimen/movie_detail_review_count_margin_top">
 
-                        <LinearLayout
-                            android:id="@+id/reviews_button"
+                        <TextView
+                            android:id="@+id/review_count_label"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:background="@drawable/button_bg"
-                            android:padding="5dp">
+                            android:text="@string/movie_detail_review_count_label"
+                            android:textAllCaps="true" />
 
-                            <TextView
-                                android:id="@+id/review_count_label"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/movie_detail_review_count_label"
-                                android:visibility="invisible"
-                                android:textAllCaps="true"
-                                android:textColor="@android:color/white" />
-
-                            <TextView
-                                android:id="@+id/review_count"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/movie_detail_review_count_margin_leftright"
-                                android:layout_marginRight="@dimen/movie_detail_review_count_margin_leftright"
-                                android:textColor="@android:color/white" />
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/review_count"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="3dp" />
 
                     </LinearLayout>
 
                     <Button
-                        android:id="@+id/mark_as_favorite_button"
+                        android:id="@+id/favorite_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/button_bg"
                         android:textColor="@android:color/white"
-                        android:text="Mark as\nfavorite"
+                        android:text="@string/button_text_mark_as_favorite"
                         android:textAllCaps="true"
                         android:layout_marginTop="20dp" />
 
