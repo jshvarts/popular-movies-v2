@@ -418,9 +418,17 @@ public class MovieDetailFragment extends Fragment {
         // save state
         compositeMovieDetails.setReviewCount(reviewCount);
 
-        SpannableString spannableReviewCount = new SpannableString("(" + String.valueOf(reviewCount) + ")");
-        spannableReviewCount.setSpan(new UnderlineSpan(), 0, spannableReviewCount.length(), 0);
-        reviewCountText.setText(spannableReviewCount);
+        StringBuilder reviewCountWithBraces = new StringBuilder(String.valueOf(reviewCount));
+        reviewCountWithBraces.insert(0, "(");
+        reviewCountWithBraces.append(")");
+
+        if (reviewCount > 0) {
+            SpannableString spannableReviewCount = new SpannableString(reviewCountWithBraces);
+            spannableReviewCount.setSpan(new UnderlineSpan(), 0, spannableReviewCount.length(), 0);
+            reviewCountText.setText(spannableReviewCount);
+        } else {
+            reviewCountText.setText(reviewCountWithBraces);
+        }
     }
 
     private boolean isMovieFavorite(int movieId) {
