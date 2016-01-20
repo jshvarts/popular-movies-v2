@@ -1,7 +1,9 @@
 package com.jshvarts.popularmovies.application.di;
 
 import com.jshvarts.popularmovies.ui.ImageAdapter;
+import com.jshvarts.popularmovies.ui.MovieDetailActivity;
 import com.jshvarts.popularmovies.ui.MovieDetailFragment;
+import com.jshvarts.popularmovies.ui.MovieListActivity;
 import com.jshvarts.popularmovies.ui.MovieListFragment;
 import com.jshvarts.popularmovies.ui.MovieReviewDetailFragment;
 import com.jshvarts.popularmovies.ui.MovieReviewListFragment;
@@ -23,6 +25,7 @@ public interface AppComponent {
 
     // activities
     void inject(SettingsActivity activity);
+    void inject(MovieListActivity activity);
 
     // fragments
     void inject(MovieListFragment fragment);

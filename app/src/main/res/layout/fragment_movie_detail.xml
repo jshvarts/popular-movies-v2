@@ -24,7 +24,8 @@
                 android:paddingBottom="@dimen/movie_detail_title_padding_top_bottom"
                 android:layout_marginBottom="@dimen/movie_detail_title_margin_top_bottom"
                 android:background="@color/original_movie_title_background_color"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                android:visibility="invisible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,7 +72,8 @@
                             android:text="@string/movie_detail_review_count_label"
                             android:paddingTop="3dp"
                             android:paddingBottom="3dp"
-                            android:textAllCaps="true" />
+                            android:textAllCaps="true"
+                            android:visibility="invisible" />
 
                         <TextView
                             android:id="@+id/review_count"
@@ -90,9 +92,9 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/button_bg"
                         android:textColor="@android:color/white"
-                        android:text="@string/button_text_mark_as_favorite"
                         android:textAllCaps="true"
-                        android:layout_marginTop="20dp" />
+                        android:layout_marginTop="20dp"
+                        android:visibility="invisible" />
 
                 </LinearLayout>
 

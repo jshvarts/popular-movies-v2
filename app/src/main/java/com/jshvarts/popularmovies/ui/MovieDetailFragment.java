@@ -143,6 +143,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState != null) {
             compositeMovieDetails = new CompositeMovieDetails();
             if (savedInstanceState.containsKey(INSTANCE_STATE_MOVIE_DETAIL_KEY)) {
@@ -209,6 +210,15 @@ public class MovieDetailFragment extends Fragment {
 
     public void onEventMainThread(MovieDetailsRequestRoutedEvent event) {
         retrieveMovie(event.getId());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (compositeMovieDetails != null && compositeMovieDetails.getMovieDetails() != null) {
+            retrieveMovie(String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
+        }
     }
 
     @OnClick({R.id.review_count_label, R.id.review_count})
@@ -310,7 +320,8 @@ public class MovieDetailFragment extends Fragment {
         if (compositeMovieDetails == null) {
             return true;
         }
-        if (compositeMovieDetails.getMovieDetails().getId() != Integer.parseInt(id)) {
+        if (compositeMovieDetails.getMovieDetails() != null
+                && compositeMovieDetails.getMovieDetails().getId() != Integer.parseInt(id)) {
             return true;
         }
         return false;
@@ -397,6 +408,7 @@ public class MovieDetailFragment extends Fragment {
         Picasso.with(getActivity()).load(imageUrl).into(posterImage);
 
         originalTitle.setText(movieDetails.getOriginalTitle());
+        originalTitle.setVisibility(View.VISIBLE);
         overview.setText(movieDetails.getOverview());
         voteAverage.setText(String.valueOf(movieDetails.getVoteAverage()) + MOVIE_RATING_OUT_OF_10);
 
@@ -410,6 +422,7 @@ public class MovieDetailFragment extends Fragment {
         } else {
             toggleFavoriteButton(false);
         }
+        favoriteButton.setVisibility(View.VISIBLE);
     }
 
     private void initializeReviewCountUI(int reviewCount) {
@@ -418,6 +431,7 @@ public class MovieDetailFragment extends Fragment {
         // save state
         compositeMovieDetails.setReviewCount(reviewCount);
 
+        reviewCountLabel.setVisibility(View.VISIBLE);
         StringBuilder reviewCountWithBraces = new StringBuilder(String.valueOf(reviewCount));
         reviewCountWithBraces.insert(0, "(");
         reviewCountWithBraces.append(")");
@@ -433,9 +447,9 @@ public class MovieDetailFragment extends Fragment {
 
     private boolean isMovieFavorite(int movieId) {
         Cursor c = dbHelper.getReadableDatabase().query(PopMoviesDbHelper.TABLE_FAVORITES,
-                new String[] {PopMoviesDbHelper.MOVIE_ID},
+                new String[]{PopMoviesDbHelper.MOVIE_ID},
                 PopMoviesDbHelper.MOVIE_ID + "=?",
-                new String[] {String.valueOf(movieId)},
+                new String[]{String.valueOf(movieId)},
                 null,
                 null,
                 null);
@@ -560,6 +574,25 @@ public class MovieDetailFragment extends Fragment {
 
             tr.addView(trailerName);
             trailerLinksTable.addView(tr);
+        }
+    }
+
+    private void initializeCompositeMovieDetailsUI(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            return;
+        }
+        compositeMovieDetails = new CompositeMovieDetails();
+        if (savedInstanceState.containsKey(INSTANCE_STATE_MOVIE_DETAIL_KEY)) {
+            MovieDetails movieDetails = savedInstanceState.getParcelable(INSTANCE_STATE_MOVIE_DETAIL_KEY);
+            compositeMovieDetails.setMovieDetails(movieDetails);
+        }
+        if (savedInstanceState.containsKey(INSTANCE_STATE_REVIEW_COUNT_KEY)) {
+            int reviewCount = savedInstanceState.getInt(INSTANCE_STATE_REVIEW_COUNT_KEY);
+            compositeMovieDetails.setReviewCount(reviewCount);
+        }
+        if (savedInstanceState.containsKey(INSTANCE_STATE_TRAILERS_KEY)) {
+            List<MovieTrailer> trailers = savedInstanceState.getParcelableArrayList(INSTANCE_STATE_TRAILERS_KEY);
+            compositeMovieDetails.setMovieTrailerList(trailers);
         }
     }
 

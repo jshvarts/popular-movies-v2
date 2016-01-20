@@ -77,7 +77,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && savedInstanceState.containsKey(INSTANCE_STATE_KEY)) {
+        if (savedInstanceState != null) {
             movieList = savedInstanceState.getParcelableArrayList(INSTANCE_STATE_KEY);
         }
     }
@@ -127,6 +127,13 @@ public class MovieListFragment extends Fragment {
         ButterKnife.unbind(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        retrieveMovieList();
+    }
+
     public void onEventMainThread(SharedPrefUpdateEvent event) {
         if (event.getPrefKey().equals(getString(R.string.pref_sort_by_key))) {
             Log.d(LOG_TAG, "shared pref update event received: " + event.getPrefKey());
@@ -143,7 +150,6 @@ public class MovieListFragment extends Fragment {
         // use state if available
         if (movieList != null) {
             initializeAdapter(movieList);
-            initializeMovieDetailCriteria(movieList);
             return;
         }
 
@@ -165,7 +171,6 @@ public class MovieListFragment extends Fragment {
                             && results.getMovies() != null
                             && !results.getMovies().isEmpty()) {
                         initializeAdapter(results.getMovies());
-                        initializeMovieDetailCriteria(results.getMovies());
                     } else {
                         Log.e(LOG_TAG, "empty movie list returned.");
                         reportSystemError();
@@ -207,17 +212,18 @@ public class MovieListFragment extends Fragment {
                 EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(id)));
             }
         });
+
+        requestMovieDetail(movieList.get(0).getId());
     }
 
     /**
-     * Initialize the detail screen with the first movie listed if the movie detail fragment is
-     * defined in this activity's layout.
+     * Initialize the detail screen with the first movie listed if in the dual pane layout.
      */
-    private void initializeMovieDetailCriteria(List<Movie> movieList) {
+    private void requestMovieDetail(int movieId) {
         if (!isDualPane) {
             return;
         }
-        EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieList.get(0).getId())));
+        EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieId)));
     }
 
     private void reportSystemError() {
