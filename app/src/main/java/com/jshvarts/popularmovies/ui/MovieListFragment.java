@@ -110,7 +110,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().registerSticky(this);
     }
 
     @Override
@@ -209,10 +209,9 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "item clicked: " + id);
-                EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(id)));
+                EventBus.getDefault().postSticky(new MovieDetailsRequestedEvent(String.valueOf(id)));
             }
         });
-
         requestMovieDetail(movieList.get(0).getId());
     }
 
@@ -223,7 +222,11 @@ public class MovieListFragment extends Fragment {
         if (!isDualPane) {
             return;
         }
-        EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieId)));
+
+        MovieDetailsRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsRequestedEvent.class);
+        if (stickyEvent == null) {
+            EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieId)));
+        }
     }
 
     private void reportSystemError() {
