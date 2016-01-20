@@ -11,7 +11,10 @@ import android.view.MenuItem;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
+import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 
+import butterknife.BindBool;
+import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -21,10 +24,17 @@ public class MovieListActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = MovieListActivity.class.getSimpleName();
 
+    @BindBool(R.bool.dual_pane)
+    protected boolean isDualPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+        ButterKnife.bind(this);
+
+        // Inject dependencies of this activity.
+        ((PopularMoviesApplication) this.getApplication()).getDaggerComponent().inject(this);
     }
 
     @Override
@@ -37,6 +47,12 @@ public class MovieListActivity extends AppCompatActivity {
     protected void onPause() {
         EventBus.getDefault().unregister(this);
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        ButterKnife.unbind(this);
+        super.onDestroy();
     }
 
     @Override
@@ -57,16 +73,14 @@ public class MovieListActivity extends AppCompatActivity {
     }
 
     /**
-     * Route detail item request. If the detail fragment is not part of the list activity,
-     * send an intent to detail activity. otherwise send out a new event to display the item.
+     * Route detail item request. If in dual pane mode, send an intent to detail activity.
+     * otherwise send out a new event to display the item.
      *
      * @param event
      */
     public void onEventMainThread(MovieDetailsRequestedEvent event) {
-        MovieDetailFragment detailFragment = (MovieDetailFragment) getSupportFragmentManager().
-                findFragmentById(R.id.movie_detail_fragment);
         Log.d(LOG_TAG, "content id requested: " + event.getId());
-        if (detailFragment == null || !detailFragment.isInLayout()) {
+        if (!isDualPane) {
             Intent detailIntent = new Intent(this, MovieDetailActivity.class);
             detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, String.valueOf(event.getId()));
             startActivity(detailIntent);

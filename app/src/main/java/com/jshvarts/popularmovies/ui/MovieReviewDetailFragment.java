@@ -4,39 +4,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
-import com.jshvarts.popularmovies.application.ImageUtils;
-import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.MovieReviewDetailRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
-import com.jshvarts.popularmovies.data.model.MovieDetails;
 import com.jshvarts.popularmovies.data.model.MovieReview;
-import com.jshvarts.popularmovies.data.model.MovieReviewCount;
 import com.squareup.leakcanary.RefWatcher;
 import com.squareup.okhttp.ResponseBody;
-import com.squareup.picasso.Picasso;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import retrofit.Call;
 import retrofit.Callback;
