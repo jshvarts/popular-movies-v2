@@ -82,7 +82,7 @@ public class MovieListActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "content id requested: " + event.getId());
         if (!isDualPane) {
             Intent detailIntent = new Intent(this, MovieDetailActivity.class);
-            detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, String.valueOf(event.getId()));
+            detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, event.getId());
             startActivity(detailIntent);
         } else {
             EventBus.getDefault().post(new MovieDetailsRequestRoutedEvent(event.getId()));

@@ -1,7 +1,6 @@
 package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -112,7 +111,7 @@ public class MovieReviewDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveMovieReview(final String id) {
+    private void retrieveMovieReview(final int id) {
 
         // use state if available
         if (movieReview != null) {
