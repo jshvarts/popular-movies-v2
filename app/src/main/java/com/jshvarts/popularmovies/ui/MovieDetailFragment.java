@@ -218,7 +218,7 @@ public class MovieDetailFragment extends Fragment {
         super.onResume();
 
         if (compositeMovieDetails != null && compositeMovieDetails.getMovieDetails() != null) {
-            retrieveMovie(String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
+            retrieveMovie(compositeMovieDetails.getMovieDetails().getId());
             return;
         }
 
@@ -270,7 +270,7 @@ public class MovieDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveMovie(final String id) {
+    private void retrieveMovie(final int id) {
 
         if (!isNewMovieRequest(id)) {
             // use state if available
@@ -320,13 +320,13 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    private boolean isNewMovieRequest(String id) {
-        Preconditions.checkArgument(TextUtils.isDigitsOnly(id), "invalid id passed in");
+    private boolean isNewMovieRequest(int id) {
+        Preconditions.checkArgument(id != 0, "invalid id passed in");
         if (compositeMovieDetails == null) {
             return true;
         }
         if (compositeMovieDetails.getMovieDetails() == null
-                || compositeMovieDetails.getMovieDetails().getId() != Integer.parseInt(id)) {
+                || compositeMovieDetails.getMovieDetails().getId() != id) {
             return true;
         }
         return false;
@@ -338,9 +338,9 @@ public class MovieDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveReviewCount(String id) {
+    private void retrieveReviewCount(int id) {
         Preconditions.checkNotNull(compositeMovieDetails);
-        Preconditions.checkArgument(id != null);
+        Preconditions.checkArgument(id != 0);
         // use state if available
         if (CompositeMovieDetails.REVIEW_COUNT_PENDING_LOOKUP != compositeMovieDetails.getReviewCount()) {
             initializeReviewCountUI(compositeMovieDetails.getReviewCount());
@@ -406,8 +406,6 @@ public class MovieDetailFragment extends Fragment {
 
         // save state
         compositeMovieDetails.setMovieDetails(movieDetails);
-
-        Log.d(getClass().getSimpleName(), "HERE " + movieDetails.getId());
 
         String imageUrl = imageUtils.getImageUrl(movieDetails.getPosterPath());
         Picasso.with(getActivity()).load(imageUrl).into(posterImage);
@@ -493,7 +491,7 @@ public class MovieDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveTrailers(String id) {
+    private void retrieveTrailers(int id) {
         Preconditions.checkNotNull(compositeMovieDetails);
 
         // use state if available

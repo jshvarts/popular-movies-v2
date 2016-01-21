@@ -50,27 +50,27 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
     }
 
     @Override
-    public Call<MovieDetails> movie(String id) {
+    public Call<MovieDetails> movie(int id) {
         return retrofitInstance.create(MovieDetailApiClient.class).movie(id);
     }
 
     @Override
-    public Call<MovieReviewCount> reviewCount(@Path("id") String movieId) {
+    public Call<MovieReviewCount> reviewCount(@Path("id") int movieId) {
         return retrofitInstance.create(MovieDetailApiClient.class).reviewCount(movieId);
     }
 
     @Override
-    public Call<MovieReviewResults> reviews(@Path("id") String movieId) {
+    public Call<MovieReviewResults> reviews(@Path("id") int movieId) {
         return retrofitInstance.create(MovieDetailApiClient.class).reviews(movieId);
     }
 
     @Override
-    public Call<MovieReview> review(@Path("id") String reviewId) {
+    public Call<MovieReview> review(@Path("id") int reviewId) {
         return retrofitInstance.create(MovieDetailApiClient.class).review(reviewId);
     }
 
     @Override
-    public Call<MovieTrailerResults> trailers(@Path("id") String movieId) {
+    public Call<MovieTrailerResults> trailers(@Path("id") int movieId) {
         return retrofitInstance.create(MovieDetailApiClient.class).trailers(movieId);
     }
 }

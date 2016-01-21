@@ -21,8 +21,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        String id = getIntent().getStringExtra(MovieDetailActivity.MOVIE_ID_EXTRA);
-        if (TextUtils.isEmpty(id)) {
+        int id = getIntent().getIntExtra(MovieDetailActivity.MOVIE_ID_EXTRA, -1);
+        if (id == -1) {
             return;
         }
 

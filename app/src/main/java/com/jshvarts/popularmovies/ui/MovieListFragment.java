@@ -209,7 +209,7 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d(LOG_TAG, "item clicked: " + id);
-                EventBus.getDefault().postSticky(new MovieDetailsRequestedEvent(String.valueOf(id)));
+                EventBus.getDefault().postSticky(new MovieDetailsRequestedEvent((int) id));
             }
         });
         requestMovieDetail(movieList.get(0).getId());
@@ -225,7 +225,7 @@ public class MovieListFragment extends Fragment {
 
         MovieDetailsRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsRequestedEvent.class);
         if (stickyEvent == null) {
-            EventBus.getDefault().post(new MovieDetailsRequestedEvent(String.valueOf(movieId)));
+            EventBus.getDefault().post(new MovieDetailsRequestedEvent(movieId));
         }
     }
 

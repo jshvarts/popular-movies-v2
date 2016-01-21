@@ -122,7 +122,7 @@ public class MovieReviewListFragment extends Fragment {
     /**
      * Makes async call via Retrofit and populates the Adapter with results
      */
-    private void retrieveMovieReviewList(String id) {
+    private void retrieveMovieReviewList(int id) {
 
         // use state if available
         if (movieReviewList != null) {

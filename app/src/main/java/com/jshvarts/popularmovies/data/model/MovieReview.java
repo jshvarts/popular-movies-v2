@@ -7,19 +7,19 @@ import android.os.Parcelable;
  * POJO that represents the movie review.
  */
 public class MovieReview implements Parcelable {
-    private final String id;
+    private final int id;
 
     private final String author;
 
     private final String content;
 
-    public MovieReview(String id, String author, String content, String url) {
+    public MovieReview(int id, String author, String content, String url) {
         this.id = id;
         this.author = author;
         this.content = content;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -32,7 +32,7 @@ public class MovieReview implements Parcelable {
     }
 
     protected MovieReview(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         author = in.readString();
         content = in.readString();
     }
@@ -43,7 +43,7 @@ public class MovieReview implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(author);
         dest.writeString(content);
     }

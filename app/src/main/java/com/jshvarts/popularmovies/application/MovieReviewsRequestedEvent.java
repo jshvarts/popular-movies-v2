@@ -1,21 +1,19 @@
 package com.jshvarts.popularmovies.application;
 
-import android.text.TextUtils;
-
 import com.google.common.base.Preconditions;
 
 /**
  * Movie reviews requested event for event bus.
  */
 public class MovieReviewsRequestedEvent {
-    private String id;
+    private int id;
 
-    public MovieReviewsRequestedEvent(String id) {
-        Preconditions.checkArgument(!TextUtils.isEmpty(id), "id is required");
+    public MovieReviewsRequestedEvent(int id) {
+        Preconditions.checkArgument(id != 0, "id is required");
         this.id = id;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 }

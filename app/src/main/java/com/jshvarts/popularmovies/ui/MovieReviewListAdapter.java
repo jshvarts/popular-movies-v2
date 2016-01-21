@@ -38,8 +38,8 @@ public class MovieReviewListAdapter extends RecyclerView.Adapter<MovieReviewList
             @Override
             public void onClick(View v) {
                 Intent detailIntent = new Intent(context, MovieReviewDetailActivity.class);
-                String reviewId = movieReviewList.get(viewHolder.getAdapterPosition()).getId();
-                detailIntent.putExtra(MovieReviewDetailActivity.REVIEW_ID_EXTRA, reviewId);
+                int id = movieReviewList.get(viewHolder.getAdapterPosition()).getId();
+                detailIntent.putExtra(MovieReviewDetailActivity.REVIEW_ID_EXTRA, id);
                 context.startActivity(detailIntent);
             }
         });
@@ -62,7 +62,7 @@ public class MovieReviewListAdapter extends RecyclerView.Adapter<MovieReviewList
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        String id;
+        int id;
         TextView author;
         TextView content;
 
