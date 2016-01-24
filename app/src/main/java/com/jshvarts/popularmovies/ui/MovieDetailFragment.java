@@ -32,7 +32,6 @@ import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
-import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
@@ -116,11 +115,11 @@ public class MovieDetailFragment extends Fragment {
     @Bind(R.id.release_date)
     protected TextView releaseDate;
 
-    @Bind(R.id.review_count_label)
-    protected TextView reviewCountLabel;
+    @Bind(R.id.review_count_link)
+    protected TextView reviewCountLink;
 
-    @Bind(R.id.review_count)
-    protected TextView reviewCountText;
+    @BindString(R.string.movie_detail_review_count_label)
+    protected String reviewCountLabel;
 
     @Bind(R.id.favorite_button)
     protected Button favoriteButton;
@@ -193,7 +192,7 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        EventBus.getDefault().registerSticky(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -214,22 +213,7 @@ public class MovieDetailFragment extends Fragment {
         retrieveMovie(event.getId());
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (compositeMovieDetails != null && compositeMovieDetails.getMovieDetails() != null) {
-            retrieveMovie(compositeMovieDetails.getMovieDetails().getId());
-            return;
-        }
-
-        MovieDetailsRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsRequestedEvent.class);
-        if (stickyEvent != null) {
-            retrieveMovie(stickyEvent.getId());
-        }
-    }
-
-    @OnClick({R.id.review_count_label, R.id.review_count})
+    @OnClick(R.id.review_count_link)
     protected void onReviewsButtonClick() {
         Preconditions.checkNotNull(compositeMovieDetails);
         Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
@@ -237,6 +221,7 @@ public class MovieDetailFragment extends Fragment {
             // no reviews to show
             return;
         }
+
         Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
         moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA,
                 compositeMovieDetails.getMovieDetails().getId());
@@ -427,17 +412,19 @@ public class MovieDetailFragment extends Fragment {
         // save state
         compositeMovieDetails.setReviewCount(reviewCount);
 
-        reviewCountLabel.setVisibility(View.VISIBLE);
+        reviewCountLink.setVisibility(View.VISIBLE);
+
         StringBuilder reviewCountWithBraces = new StringBuilder(String.valueOf(reviewCount));
         reviewCountWithBraces.insert(0, "(");
         reviewCountWithBraces.append(")");
 
         if (reviewCount > 0) {
-            SpannableString spannableReviewCount = new SpannableString(reviewCountWithBraces);
-            spannableReviewCount.setSpan(new UnderlineSpan(), 0, spannableReviewCount.length(), 0);
-            reviewCountText.setText(spannableReviewCount);
+            SpannableString underlinedReviewCountWithBraces = new SpannableString(reviewCountWithBraces);
+            underlinedReviewCountWithBraces.setSpan(new UnderlineSpan(), 0, underlinedReviewCountWithBraces.length(), 0);
+            reviewCountLink.setText(reviewCountLabel + " " + underlinedReviewCountWithBraces);
+            reviewCountLink.setEnabled(true);
         } else {
-            reviewCountText.setText(reviewCountWithBraces);
+            reviewCountLink.setText(reviewCountLabel + " " + reviewCountWithBraces);
         }
     }
 
