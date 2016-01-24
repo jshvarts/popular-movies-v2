@@ -65,7 +65,7 @@ public class RetrofitMovieDetailApiClient implements MovieDetailApiClient {
     }
 
     @Override
-    public Call<MovieReview> review(@Path("id") int reviewId) {
+    public Call<MovieReview> review(@Path("id") String reviewId) {
         return retrofitInstance.create(MovieDetailApiClient.class).review(reviewId);
     }
 

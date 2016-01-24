@@ -111,7 +111,7 @@ public class MovieReviewDetailFragment extends Fragment {
 
      * @param id
      */
-    private void retrieveMovieReview(final int id) {
+    private void retrieveMovieReview(final String id) {
 
         // use state if available
         if (movieReview != null) {

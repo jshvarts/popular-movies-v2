@@ -163,7 +163,7 @@ public class MovieReviewListFragment extends Fragment {
             public void onFailure(Throwable t) {
                 progressBar.setVisibility(View.GONE);
 
-                Log.e(LOG_TAG, "failed to get movie list. " + t.getMessage());
+                Log.e(LOG_TAG, "failed to get movie review list. " + t.getMessage());
                 reportSystemError();
             }
         });

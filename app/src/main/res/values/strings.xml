@@ -12,6 +12,7 @@
     <string name="pref_sort_by_key" translatable="false">pref_sort_by_key</string>
     <string name="pref_sort_by_most_popular">popularity.desc</string>
     <string name="pref_sort_by_vote_average">vote_average.desc</string>
+    <string name="pref_sort_by_favorites">favorites</string>
 
     <!-- movie detail -->
     <string name="movie_detail_review_count_label"><u>Reviews</u></string>

@@ -13,6 +13,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.BindDimen;
 import butterknife.BindDrawable;
 import butterknife.BindString;
 import butterknife.ButterKnife;
@@ -238,7 +240,7 @@ public class MovieDetailFragment extends Fragment {
         }
         Intent moviewReviewsIntent = new Intent(getActivity(), MovieReviewListActivity.class);
         moviewReviewsIntent.putExtra(MovieReviewListActivity.MOVIE_ID_EXTRA,
-                String.valueOf(compositeMovieDetails.getMovieDetails().getId()));
+                compositeMovieDetails.getMovieDetails().getId());
         startActivity(moviewReviewsIntent);
     }
 
@@ -254,14 +256,6 @@ public class MovieDetailFragment extends Fragment {
         dbHelper.getWritableDatabase().insert(PopMoviesDbHelper.TABLE_FAVORITES, null, movieFavoritelValues);
 
         toggleFavoriteButton(true);
-
-        Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.QUERY_FAVORITES, null);
-        while(c.moveToNext()) {
-            Log.d(getClass().getSimpleName(), "id found: " + c.getInt(0));
-            Log.d(getClass().getSimpleName(), "title found: " + c.getString(1));
-            Log.d(getClass().getSimpleName(), "poster_path found: " + c.getString(2));
-        }
-        c.close();
     }
 
     /**
@@ -555,7 +549,6 @@ public class MovieDetailFragment extends Fragment {
             View.OnClickListener trailerOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Toast.makeText(getActivity(), "play trailer " + trailer.getKey(), Toast.LENGTH_SHORT).show();
                     playTrailer(trailer.getKey());
                 }
             };
@@ -571,6 +564,8 @@ public class MovieDetailFragment extends Fragment {
 
             trailerName = new TextView(getActivity());
             trailerName.setText(trailer.getName());
+            trailerName.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    getResources().getDimension(R.dimen.movie_detail_trailer_text_size));
             trailerName.setGravity(Gravity.CENTER_VERTICAL);
             trailerName.setPadding(20, 0, 0, 0);
             trailerName.setOnClickListener(trailerOnClickListener);

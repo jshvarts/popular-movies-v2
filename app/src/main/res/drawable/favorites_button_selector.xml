@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content" android:layout_height="wrap_content">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/favorites_button_pressed_background_color"/>
+            <corners android:radius="10dip"/>
+        </shape>
+    </item>
+    <item android:state_pressed="false">
+        <shape>
+            <solid android:color="@color/favorites_button_background_color"/>
+            <corners android:radius="10dip"/>
+        </shape>
+    </item>
+</selector>

@@ -12,7 +12,11 @@
     <dimen name="movie_detail_vote_average_text_size">18sp</dimen>
     <dimen name="movie_detail_overview_margin_top">15dp</dimen>
     <dimen name="movie_detail_overview_text_size">15sp</dimen>
+    <dimen name="movie_detail_review_link_padding_top_bottom">3dp</dimen>
     <dimen name="movie_detail_review_data_text_size">15sp</dimen>
-    <dimen name="movie_detail_review_count_margin_top">15dp</dimen>
-    <dimen name="movie_detail_trailer_heading_text_size">20sp</dimen>
+    <dimen name="movie_detail_review_count_text_size">16sp</dimen>
+    <dimen name="movie_detail_review_count_margin_top">20dp</dimen>
+    <dimen name="movie_detail_trailer_heading_text_size">22sp</dimen>
+    <dimen name="movie_detail_trailer_heading_margin_top_bottom">16dp</dimen>
+    <dimen name="movie_detail_trailer_text_size">16sp</dimen>
 </resources>
