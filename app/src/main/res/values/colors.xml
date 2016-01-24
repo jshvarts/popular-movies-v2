@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="original_movie_title_background_color">#009788</color>
+    <color name="favorites_button_background_color">#009788</color>
+    <color name="favorites_button_pressed_background_color">#003366</color>
 </resources>

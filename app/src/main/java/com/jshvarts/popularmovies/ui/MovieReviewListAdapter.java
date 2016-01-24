@@ -38,7 +38,7 @@ public class MovieReviewListAdapter extends RecyclerView.Adapter<MovieReviewList
             @Override
             public void onClick(View v) {
                 Intent detailIntent = new Intent(context, MovieReviewDetailActivity.class);
-                int id = movieReviewList.get(viewHolder.getAdapterPosition()).getId();
+                String id = movieReviewList.get(viewHolder.getAdapterPosition()).getId();
                 detailIntent.putExtra(MovieReviewDetailActivity.REVIEW_ID_EXTRA, id);
                 context.startActivity(detailIntent);
             }
@@ -62,7 +62,7 @@ public class MovieReviewListAdapter extends RecyclerView.Adapter<MovieReviewList
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        int id;
+        String id;
         TextView author;
         TextView content;
 

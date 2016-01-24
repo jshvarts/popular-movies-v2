@@ -10,5 +10,7 @@
     <dimen name="movie_detail_overview_margin_top">25dp</dimen>
     <dimen name="movie_detail_overview_text_size">22sp</dimen>
     <dimen name="movie_detail_review_data_text_size">20sp</dimen>
-    <dimen name="movie_detail_review_count_margin_top">25dp</dimen>
+    <dimen name="movie_detail_trailer_heading_text_size">28sp</dimen>
+    <dimen name="movie_detail_trailer_heading_margin_top_bottom">22dp</dimen>
+    <dimen name="movie_detail_trailer_text_size">20sp</dimen>
 </resources>

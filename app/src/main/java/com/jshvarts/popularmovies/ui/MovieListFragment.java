@@ -2,8 +2,10 @@ package com.jshvarts.popularmovies.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,6 +70,9 @@ public class MovieListFragment extends Fragment {
 
     @BindString(R.string.pref_sort_by_key)
     protected String prefSortByKey;
+
+    @BindString(R.string.pref_sort_by_favorites)
+    protected String prefSortByFavorites;
 
     @BindBool(R.bool.dual_pane)
     protected boolean isDualPane;
@@ -154,6 +159,22 @@ public class MovieListFragment extends Fragment {
         }
 
         String sortBy = sharedPreferences.getString((prefSortByKey), getString(R.string.pref_sort_by_most_popular));
+
+        if (sortBy.equals(prefSortByFavorites)) {
+            Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.QUERY_FAVORITES, null);
+            List<Movie> movieList = new ArrayList<>(c.getCount());
+            Movie movie;
+            while(c.moveToNext()) {
+                movie = new Movie(c.getInt(0), c.getString(2));
+                movieList.add(movie);
+                Log.d(getClass().getSimpleName(), "id found: " + movie.getId());
+                Log.d(getClass().getSimpleName(), "title found: " + c.getString(1));
+                Log.d(getClass().getSimpleName(), "poster_path found: " + movie.getPosterPath());
+                initializeAdapter(movieList);
+            }
+            c.close();
+            return;
+        }
 
         progressBar.setVisibility(View.VISIBLE);
 

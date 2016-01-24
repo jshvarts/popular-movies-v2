@@ -2,7 +2,6 @@ package com.jshvarts.popularmovies.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
@@ -25,7 +24,7 @@ public class MovieReviewListActivity extends AppCompatActivity {
         Preconditions.checkState(getIntent() != null, "valid intent is required");
 
         int id = getIntent().getIntExtra(MovieReviewListActivity.MOVIE_ID_EXTRA, -1);
-        Preconditions.checkState(id != -1, "valid id in intent is required");
+        Preconditions.checkArgument(id != -1);
 
         EventBus.getDefault().post(new MovieReviewsRequestedEvent(id));
     }

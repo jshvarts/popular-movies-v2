@@ -27,7 +27,7 @@ public interface MovieDetailApiClient {
     Call<MovieReviewResults> reviews(@Path("id") int movieId);
 
     @GET("/3/review/{id}")
-    Call<MovieReview> review(@Path("id") int reviewId);
+    Call<MovieReview> review(@Path("id") String reviewId);
 
     @GET("/3/movie/{id}/videos")
     Call<MovieTrailerResults> trailers(@Path("id") int movieId);

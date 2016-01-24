@@ -27,8 +27,8 @@ public class MovieReviewDetailActivity extends AppCompatActivity {
 
         Preconditions.checkState(getIntent() != null, "valid intent is required");
 
-        int id = getIntent().getIntExtra(REVIEW_ID_EXTRA, -1);
-        Preconditions.checkState(id != -1, "valid id in intent is required");
+        String id = getIntent().getStringExtra(REVIEW_ID_EXTRA);
+        Preconditions.checkNotNull(id);
 
         EventBus.getDefault().post(new MovieReviewDetailRequestedEvent(id));
     }
