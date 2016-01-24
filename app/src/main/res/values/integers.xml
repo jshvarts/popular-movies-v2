@@ -2,5 +2,5 @@
 <resources>
     <integer name="grid_view_num_columns">2</integer>
     <integer name="moviedb_min_vote_count">1000</integer>
-    <integer name="image_size">185</integer>
+    <integer name="image_size">500</integer>
 </resources>
