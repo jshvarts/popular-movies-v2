@@ -2,7 +2,6 @@ package com.jshvarts.popularmovies.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;

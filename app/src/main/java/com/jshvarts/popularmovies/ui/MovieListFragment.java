@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,7 +114,7 @@ public class MovieListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        EventBus.getDefault().registerSticky(this);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -229,8 +228,7 @@ public class MovieListFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d(LOG_TAG, "item clicked: " + id);
-                EventBus.getDefault().postSticky(new MovieDetailsRequestedEvent((int) id));
+                EventBus.getDefault().post(new MovieDetailsRequestedEvent((int) id));
             }
         });
         requestMovieDetail(movieList.get(0).getId());
@@ -244,10 +242,7 @@ public class MovieListFragment extends Fragment {
             return;
         }
 
-        MovieDetailsRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsRequestedEvent.class);
-        if (stickyEvent == null) {
-            EventBus.getDefault().post(new MovieDetailsRequestedEvent(movieId));
-        }
+        EventBus.getDefault().post(new MovieDetailsRequestedEvent(movieId));
     }
 
     private void reportSystemError() {
