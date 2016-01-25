@@ -32,7 +32,6 @@ import com.google.common.base.Preconditions;
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.ImageUtils;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
-import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.model.CompositeMovieDetails;
@@ -64,6 +63,11 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.CONTENT_URI;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_ID;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_TITLE;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_POSTER_PATH;
+
 /**
  * Movie detail fragment responsible for lookup extra movie attributes.
  */
@@ -93,9 +97,6 @@ public class MovieDetailFragment extends Fragment {
 
     @Inject
     protected ImageUtils imageUtils;
-
-    @Inject
-    protected PopMoviesDbHelper dbHelper;
 
     @Bind(R.id.progress_bar)
     protected ProgressBar progressBar;
@@ -234,12 +235,13 @@ public class MovieDetailFragment extends Fragment {
         Preconditions.checkNotNull(compositeMovieDetails.getMovieDetails());
 
         ContentValues movieFavoritelValues = new ContentValues();
-        movieFavoritelValues.put(PopMoviesDbHelper.MOVIE_ID, compositeMovieDetails.getMovieDetails().getId());
-        movieFavoritelValues.put(PopMoviesDbHelper.MOVIE_TITLE, compositeMovieDetails.getMovieDetails().getOriginalTitle());
-        movieFavoritelValues.put(PopMoviesDbHelper.POSTER_PATH, compositeMovieDetails.getMovieDetails().getPosterPath());
-        dbHelper.getWritableDatabase().insert(PopMoviesDbHelper.TABLE_FAVORITES, null, movieFavoritelValues);
-
-        toggleFavoriteButton(true);
+        movieFavoritelValues.put(COLUMN_MOVIE_ID, compositeMovieDetails.getMovieDetails().getId());
+        movieFavoritelValues.put(COLUMN_MOVIE_TITLE, compositeMovieDetails.getMovieDetails().getOriginalTitle());
+        movieFavoritelValues.put(COLUMN_POSTER_PATH, compositeMovieDetails.getMovieDetails().getPosterPath());
+        Uri contentUri = getActivity().getContentResolver().insert(CONTENT_URI, movieFavoritelValues);
+        if (contentUri != null) {
+            toggleFavoriteButton(true);
+        }
     }
 
     /**
@@ -429,31 +431,22 @@ public class MovieDetailFragment extends Fragment {
     }
 
     private boolean isMovieFavorite(int movieId) {
-        Cursor c = dbHelper.getReadableDatabase().query(PopMoviesDbHelper.TABLE_FAVORITES,
-                new String[]{PopMoviesDbHelper.MOVIE_ID},
-                PopMoviesDbHelper.MOVIE_ID + "=?",
-                new String[]{String.valueOf(movieId)},
-                null,
-                null,
-                null);
+        String[] projection = new String[] {COLUMN_MOVIE_ID};
+        String selection = COLUMN_MOVIE_ID + "=?";
+        String[] selectionArgs = new String[] {String.valueOf(movieId)};
 
+        Cursor c = getActivity().getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, null);
         if (c.getCount() == 0) {
+            Log.d(getClass().getSimpleName(), "movie not favorite: " + movieId);
             toggleFavoriteButton(false);
             c.close();
             return false;
         }
-        while (c.moveToNext()) {
-            Log.d(getClass().getSimpleName(), "favorite id found: " + c.getInt(0));
-            toggleFavoriteButton(true);
-            if (!c.isLast()) {
-                Log.e(getClass().getSimpleName(),
-                        "more than one value returned for movie id " + compositeMovieDetails.getMovieDetails().getId());
-            }
-            c.close();
-            return true;
-        }
+
+        Log.d(getClass().getSimpleName(), "movie is favorite: " + movieId);
+        toggleFavoriteButton(true);
         c.close();
-        return false;
+        return true;
     }
 
     private void toggleFavoriteButton(boolean isFavorite) {
