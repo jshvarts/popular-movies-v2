@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
-import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
 import com.jshvarts.popularmovies.data.model.Movie;
@@ -41,6 +40,11 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.CONTENT_URI;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_ID;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_TITLE;
+import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_POSTER_PATH;
+
 /**
  * Movie list fragment responsible for loading data for grid layout.
  */
@@ -52,14 +56,13 @@ public class MovieListFragment extends Fragment {
 
     private static final String MOVIE_LIST_UNAVAILABLE = "Unable to retrieve movie list. Please try again.";
 
+    private static final String NO_FAVORITES_YET = "No favorites set up yet. Please browse movies by other sort criteria and set some as favorites.";
+
     @Inject
     protected MovieListApiClient movieListApiClient;
 
     @Inject
     protected SharedPreferences sharedPreferences;
-
-    @Inject
-    protected PopMoviesDbHelper dbHelper;
 
     @Bind(R.id.movie_list_gridview)
     protected GridView gridView;
@@ -160,15 +163,22 @@ public class MovieListFragment extends Fragment {
         String sortBy = sharedPreferences.getString((prefSortByKey), getString(R.string.pref_sort_by_most_popular));
 
         if (sortBy.equals(prefSortByFavorites)) {
-            Cursor c = dbHelper.getReadableDatabase().rawQuery(PopMoviesDbHelper.QUERY_FAVORITES, null);
+            String[] projection = new String[] {COLUMN_MOVIE_ID, COLUMN_MOVIE_TITLE, COLUMN_POSTER_PATH};
+
+            Cursor c = getActivity().getContentResolver().query(CONTENT_URI, projection, null, null, null);
+            if (c.getCount() == 0) {
+                c.close();
+                Log.d(getClass().getSimpleName(), "no favorites for user yet");
+                Toast.makeText(getActivity(), NO_FAVORITES_YET, Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // TODO can this be converted to SimpleCursorAdapter?
             List<Movie> movieList = new ArrayList<>(c.getCount());
             Movie movie;
             while(c.moveToNext()) {
                 movie = new Movie(c.getInt(0), c.getString(2));
                 movieList.add(movie);
-                Log.d(getClass().getSimpleName(), "id found: " + movie.getId());
-                Log.d(getClass().getSimpleName(), "title found: " + c.getString(1));
-                Log.d(getClass().getSimpleName(), "poster_path found: " + movie.getPosterPath());
                 initializeAdapter(movieList);
             }
             c.close();

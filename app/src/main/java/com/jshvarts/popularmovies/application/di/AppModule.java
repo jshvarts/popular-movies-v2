@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.jshvarts.popularmovies.application.ImageUtils;
-import com.jshvarts.popularmovies.application.PopMoviesDbHelper;
 import com.jshvarts.popularmovies.data.access.remote.MovieDetailApiClient;
 import com.jshvarts.popularmovies.data.access.remote.MovieListApiClient;
 import com.jshvarts.popularmovies.data.access.remote.RetrofitMovieDetailApiClient;
@@ -44,12 +43,6 @@ public class AppModule {
     @Singleton
     public SharedPreferences provideSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(appContext);
-    }
-
-    @Provides
-    @Singleton
-    public PopMoviesDbHelper providePopMoviesDbHelper() {
-        return new PopMoviesDbHelper(appContext);
     }
 
     @Provides
