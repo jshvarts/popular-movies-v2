@@ -63,10 +63,10 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.CONTENT_URI;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_ID;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_TITLE;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_POSTER_PATH;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.CONTENT_URI;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_MOVIE_ID;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_MOVIE_TITLE;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_POSTER_PATH;
 
 /**
  * Movie detail fragment responsible for lookup extra movie attributes.

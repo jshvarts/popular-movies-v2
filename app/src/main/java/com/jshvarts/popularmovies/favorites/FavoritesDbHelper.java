@@ -10,9 +10,10 @@ import android.text.TextUtils;
 
 import java.sql.SQLException;
 
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_ID;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_MOVIE_TITLE;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.COLUMN_POSTER_PATH;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.TABLE_NAME;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_MOVIE_ID;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_MOVIE_TITLE;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.FavoriteEntry.COLUMN_POSTER_PATH;
 
 /**
  * Database helper for the app.
@@ -20,15 +21,14 @@ import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.CO
 public class FavoritesDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME="favorites.db";
     private static final int SCHEMA=1;
-    public static final String TABLE_FAVORITES = "favorites";
 
-    private static final String SQL_CREATE = "CREATE TABLE " + TABLE_FAVORITES +
+    private static final String SQL_CREATE = "CREATE TABLE " + TABLE_NAME +
             " ("+ COLUMN_MOVIE_ID +" INTEGER PRIMARY KEY, "+ COLUMN_MOVIE_TITLE +" TEXT, "+ COLUMN_POSTER_PATH +" TEXT)";
 
-    private static final String SQL_DROP = "DROP TABLE IS EXISTS " + TABLE_FAVORITES;
+    private static final String SQL_DROP = "DROP TABLE IS EXISTS " + TABLE_NAME;
 
     private static final String SQL_FIND_TABLE = "SELECT name FROM sqlite_master WHERE type='table' " +
-            "AND name='"+TABLE_FAVORITES+"'";
+            "AND name='"+TABLE_NAME+"'";
 
     private static final String DEFAULT_SORT_ORDER = COLUMN_MOVIE_TITLE;
 
@@ -53,7 +53,7 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
 
     public Cursor getFavorites(String id, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder sqliteQueryBuilder = new SQLiteQueryBuilder();
-        sqliteQueryBuilder.setTables(TABLE_FAVORITES);
+        sqliteQueryBuilder.setTables(TABLE_NAME);
 
         if (id != null) {
             sqliteQueryBuilder.appendWhere(COLUMN_MOVIE_ID + " = " + id);
@@ -75,7 +75,7 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     }
 
     public long addFavorite(ContentValues values) throws SQLException {
-        long id = getWritableDatabase().insert(TABLE_FAVORITES, "", values);
+        long id = getWritableDatabase().insert(TABLE_NAME, "", values);
         if(id <= 0 ) {
             throw new SQLException("Failed to add a favorite");
         }
@@ -85,17 +85,17 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
 
     public int deleteFavorites(String id) {
         if(id == null) {
-            return getWritableDatabase().delete(TABLE_FAVORITES, null , null);
+            return getWritableDatabase().delete(TABLE_NAME, null , null);
         } else {
-            return getWritableDatabase().delete(TABLE_FAVORITES, COLUMN_MOVIE_ID +"=?", new String[]{id});
+            return getWritableDatabase().delete(TABLE_NAME, COLUMN_MOVIE_ID +"=?", new String[]{id});
         }
     }
 
     public int updateFavorites(String id, ContentValues values) {
         if(id == null) {
-            return getWritableDatabase().update(TABLE_FAVORITES, values, null, null);
+            return getWritableDatabase().update(TABLE_NAME, values, null, null);
         } else {
-            return getWritableDatabase().update(TABLE_FAVORITES, values, COLUMN_MOVIE_ID +"=?", new String[]{id});
+            return getWritableDatabase().update(TABLE_NAME, values, COLUMN_MOVIE_ID +"=?", new String[]{id});
         }
     }
 }

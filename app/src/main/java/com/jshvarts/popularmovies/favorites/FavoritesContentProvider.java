@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import java.sql.SQLException;
 
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.PROVIDER_NAME;
-import static com.jshvarts.popularmovies.favorites.FavoritesProviderConstants.CONTENT_URI;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.PROVIDER_NAME;
+import static com.jshvarts.popularmovies.favorites.FavoritesContract.CONTENT_URI;
 
 /**
  * Content Provider implementation for Pop Movies.
