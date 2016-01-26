@@ -3,15 +3,14 @@ package com.jshvarts.popularmovies.ui;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.jshvarts.popularmovies.R;
+import com.jshvarts.popularmovies.application.MovieDetailsAfterOrientationChangeRequestedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
-import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 
 import butterknife.BindBool;
 import butterknife.ButterKnife;
@@ -22,7 +21,7 @@ import de.greenrobot.event.EventBus;
  */
 public class MovieListActivity extends AppCompatActivity {
 
-    private static final String LOG_TAG = MovieListActivity.class.getSimpleName();
+    public static final String MOVIE_ID_EXTRA = "id";
 
     @BindBool(R.bool.dual_pane)
     protected boolean isDualPane;
@@ -33,8 +32,12 @@ public class MovieListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
 
-        // Inject dependencies of this activity.
-        ((PopularMoviesApplication) this.getApplication()).getDaggerComponent().inject(this);
+        int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, -1);
+        if (id == -1) {
+            return;
+        }
+
+        EventBus.getDefault().postSticky(new MovieDetailsAfterOrientationChangeRequestedEvent(id));
     }
 
     @Override
@@ -79,7 +82,6 @@ public class MovieListActivity extends AppCompatActivity {
      * @param event
      */
     public void onEventMainThread(MovieDetailsRequestedEvent event) {
-        Log.d(LOG_TAG, "content id requested: " + event.getId());
         if (!isDualPane) {
             Intent detailIntent = new Intent(this, MovieDetailActivity.class);
             detailIntent.putExtra(MovieDetailActivity.MOVIE_ID_EXTRA, event.getId());

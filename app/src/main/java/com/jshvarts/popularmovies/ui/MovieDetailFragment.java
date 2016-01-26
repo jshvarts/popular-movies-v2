@@ -202,7 +202,7 @@ public class MovieDetailFragment extends Fragment {
         super.onDetach();
     }
 
-        @Override
+    @Override
     public void onDestroy() {
         super.onDestroy();
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());

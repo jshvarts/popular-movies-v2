@@ -25,7 +25,6 @@ public interface AppComponent {
 
     // activities
     void inject(SettingsActivity activity);
-    void inject(MovieListActivity activity);
 
     // fragments
     void inject(MovieListFragment fragment);

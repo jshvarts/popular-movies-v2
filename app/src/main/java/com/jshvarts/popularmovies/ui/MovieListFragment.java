@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jshvarts.popularmovies.R;
+import com.jshvarts.popularmovies.application.MovieDetailsAfterOrientationChangeRequestedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 import com.jshvarts.popularmovies.application.PopularMoviesApplication;
 import com.jshvarts.popularmovies.application.SharedPrefUpdateEvent;
@@ -109,15 +110,9 @@ public class MovieListFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        retrieveMovieList();
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().registerSticky(this);
     }
 
     @Override
@@ -241,7 +236,14 @@ public class MovieListFragment extends Fragment {
                 EventBus.getDefault().post(new MovieDetailsRequestedEvent((int) id));
             }
         });
-        requestMovieDetail(movieList.get(0).getId());
+
+        MovieDetailsAfterOrientationChangeRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsAfterOrientationChangeRequestedEvent.class);
+        if (stickyEvent != null) {
+            EventBus.getDefault().removeStickyEvent(stickyEvent);
+            requestMovieDetail(stickyEvent.getId());
+        } else {
+            requestMovieDetail(movieList.get(0).getId());
+        }
     }
 
     /**
