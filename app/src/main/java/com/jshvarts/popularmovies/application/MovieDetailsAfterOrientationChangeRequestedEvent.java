@@ -3,7 +3,7 @@ package com.jshvarts.popularmovies.application;
 import com.google.common.base.Preconditions;
 
 /**
- * Movie detail requested event for event bus.
+ * this event is used to "remember" last movie viewed between single and dual pane modes.
  */
 public class MovieDetailsAfterOrientationChangeRequestedEvent {
     private int id;
