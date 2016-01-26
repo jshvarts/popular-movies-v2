@@ -97,8 +97,6 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
 
-    private ShareActionProvider shareActionProvider;
-
     @Inject
     protected MovieDetailApiClient movieDetailApiClient;
 
@@ -148,6 +146,10 @@ public class MovieDetailFragment extends Fragment {
     protected String buttonTextFavorite;
 
     private CompositeMovieDetails compositeMovieDetails;
+
+    private ShareActionProvider shareActionProvider;
+
+    private Uri shareableUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -217,14 +219,6 @@ public class MovieDetailFragment extends Fragment {
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
         ButterKnife.unbind(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_share) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -554,10 +548,17 @@ public class MovieDetailFragment extends Fragment {
         TextView trailerName;
         for (final MovieTrailer trailer : trailers) {
 
+            // allow for the first trailer to be shared
+            if (shareableUri == null) {
+                if (trailers.indexOf(trailer) == 0) {
+                    createShareIntent(trailer.getKey());
+                }
+            }
+
             View.OnClickListener trailerOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playTrailer(trailer.getKey(), trailers.indexOf(trailer));
+                    playTrailer(trailer.getKey());
                 }
             };
 
@@ -589,9 +590,8 @@ public class MovieDetailFragment extends Fragment {
      * Keeps track of the first trailer available to use for the share widget
      *
      * @param key
-     * @param trailerIndex
      */
-    private void playTrailer(String key, int trailerIndex){
+    private void playTrailer(String key){
         Preconditions.checkArgument(!TextUtils.isEmpty(key));
 
         Intent intent;
@@ -600,11 +600,7 @@ public class MovieDetailFragment extends Fragment {
             startActivity(intent);
         } catch (ActivityNotFoundException youtubeAppNotFoundException) {
             try {
-                Uri uri = Uri.parse(YOUTUBE_HTTP_BASE_URL + key);
-                if (trailerIndex == 0) {
-                    setUpShareableItem(uri);
-                }
-                intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_HTTP_BASE_URL + key));
                 startActivity(intent);
             } catch (ActivityNotFoundException webBrowserAppNotFoundException) {
                 Toast.makeText(getActivity(), UNABLE_TO_PLAY_TRAILER_MESSAGE, Toast.LENGTH_LONG).show();
@@ -612,18 +608,19 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
-    private Intent createShareTrailerIntent(Uri uri) {
+    private void createShareIntent(String videoKey) {
+        if (shareActionProvider == null) {
+            Log.w(getClass().getSimpleName(), "share action provider has not been created.");
+            return;
+        }
+        Preconditions.checkArgument(videoKey != null);
+        shareableUri = Uri.parse(YOUTUBE_HTTP_BASE_URL + videoKey);
+
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        // create a new task for the document to share
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
-        return shareIntent;
-    }
-
-    private void setUpShareableItem(Uri uri) {
-        Preconditions.checkArgument(uri != null);
-        shareActionProvider.setShareIntent(createShareTrailerIntent(uri));
+        shareIntent.putExtra(Intent.EXTRA_TEXT, shareableUri.toString());
+        shareActionProvider.setShareIntent(shareIntent);
     }
 
     private void reportSystemError() {
