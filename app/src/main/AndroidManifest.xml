@@ -25,7 +25,7 @@
 
         <activity android:name=".ui.MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:launchMode="singleTop"
+            android:configChanges="orientation|screenSize"
             android:parentActivityName=".ui.MovieListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
