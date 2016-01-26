@@ -8,7 +8,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.jshvarts.popularmovies.R;
-import com.jshvarts.popularmovies.application.MovieDetailsAfterOrientationChangeRequestedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestRoutedEvent;
 import com.jshvarts.popularmovies.application.MovieDetailsRequestedEvent;
 
@@ -21,8 +20,6 @@ import de.greenrobot.event.EventBus;
  */
 public class MovieListActivity extends AppCompatActivity {
 
-    public static final String MOVIE_ID_EXTRA = "id";
-
     @BindBool(R.bool.dual_pane)
     protected boolean isDualPane;
 
@@ -31,13 +28,6 @@ public class MovieListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
         ButterKnife.bind(this);
-
-        int id = getIntent().getIntExtra(MOVIE_ID_EXTRA, -1);
-        if (id == -1) {
-            return;
-        }
-
-        EventBus.getDefault().postSticky(new MovieDetailsAfterOrientationChangeRequestedEvent(id));
     }
 
     @Override

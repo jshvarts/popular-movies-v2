@@ -234,15 +234,30 @@ public class MovieListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 EventBus.getDefault().post(new MovieDetailsRequestedEvent((int) id));
+
+                if (isDualPane) {
+                    // create a sticky (session) event in case the orientation changes from landscape dual pane to portrait
+                    // this will ensure we remember the last movie viewed when we return to landscape dual pane screen
+                    MovieDetailsAfterOrientationChangeRequestedEvent orientationChangeEvent = EventBus.getDefault()
+                            .getStickyEvent(MovieDetailsAfterOrientationChangeRequestedEvent.class);
+                    if (orientationChangeEvent != null) {
+                        EventBus.getDefault().removeStickyEvent(orientationChangeEvent);
+                    }
+                    EventBus.getDefault().postSticky(new MovieDetailsAfterOrientationChangeRequestedEvent((int) id));
+                }
             }
         });
 
-        MovieDetailsAfterOrientationChangeRequestedEvent stickyEvent = EventBus.getDefault().getStickyEvent(MovieDetailsAfterOrientationChangeRequestedEvent.class);
-        if (stickyEvent != null) {
-            EventBus.getDefault().removeStickyEvent(stickyEvent);
-            requestMovieDetail(stickyEvent.getId());
-        } else {
-            requestMovieDetail(movieList.get(0).getId());
+        if (isDualPane) {
+            // if sticky (session) event is present, the orientation just changed to landscape dual pane
+            // use the last movie viewed to initialize the movie detail fragment of the landscape dual pane screen
+            MovieDetailsAfterOrientationChangeRequestedEvent orientationChangeEvent =
+                    EventBus.getDefault().getStickyEvent(MovieDetailsAfterOrientationChangeRequestedEvent.class);
+            if (orientationChangeEvent != null) {
+                requestMovieDetail(orientationChangeEvent.getId());
+            } else {
+                requestMovieDetail(movieList.get(0).getId());
+            }
         }
     }
 
