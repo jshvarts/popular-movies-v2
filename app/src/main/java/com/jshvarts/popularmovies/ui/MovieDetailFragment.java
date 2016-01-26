@@ -9,6 +9,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.UnderlineSpan;
@@ -16,6 +18,9 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -92,6 +97,8 @@ public class MovieDetailFragment extends Fragment {
 
     private static final String MOVIE_RATING_OUT_OF_10 = "/10";
 
+    private ShareActionProvider shareActionProvider;
+
     @Inject
     protected MovieDetailApiClient movieDetailApiClient;
 
@@ -145,6 +152,8 @@ public class MovieDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
 
         if (savedInstanceState != null) {
             compositeMovieDetails = new CompositeMovieDetails();
@@ -208,6 +217,27 @@ public class MovieDetailFragment extends Fragment {
         RefWatcher refWatcher = PopularMoviesApplication.getRefWatcher(getActivity());
         refWatcher.watch(this);
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        boolean result = super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_share) {
+            return true;
+        }
+        return result;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.share_menu, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
     }
 
     public void onEventMainThread(MovieDetailsRequestRoutedEvent event) {
@@ -500,7 +530,7 @@ public class MovieDetailFragment extends Fragment {
         });
     }
 
-    private void initializeTrailersUI(List<MovieTrailer> trailers) {
+    private void initializeTrailersUI(final List<MovieTrailer> trailers) {
         Preconditions.checkNotNull(compositeMovieDetails);
         Preconditions.checkNotNull(trailers);
 
@@ -528,7 +558,7 @@ public class MovieDetailFragment extends Fragment {
             View.OnClickListener trailerOnClickListener = new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    playTrailer(trailer.getKey());
+                    playTrailer(trailer.getKey(), trailers.indexOf(trailer));
                 }
             };
 
@@ -557,10 +587,12 @@ public class MovieDetailFragment extends Fragment {
     /**
      * Attempts playing a video in YouTube or web browser.
      * Handles gracefully if unable to handle the intent.
+     * Keeps track of the first trailer available to use for the share widget
      *
      * @param key
+     * @param trailerIndex
      */
-    private void playTrailer(String key){
+    private void playTrailer(String key, int trailerIndex){
         Preconditions.checkArgument(!TextUtils.isEmpty(key));
 
         Intent intent;
@@ -569,12 +601,30 @@ public class MovieDetailFragment extends Fragment {
             startActivity(intent);
         } catch (ActivityNotFoundException youtubeAppNotFoundException) {
             try {
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_HTTP_BASE_URL + key));
+                Uri uri = Uri.parse(YOUTUBE_HTTP_BASE_URL + key);
+                if (trailerIndex == 0) {
+                    setUpShareableItem(uri);
+                }
+                intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
             } catch (ActivityNotFoundException webBrowserAppNotFoundException) {
                 Toast.makeText(getActivity(), UNABLE_TO_PLAY_TRAILER_MESSAGE, Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private Intent createShareTrailerIntent(Uri uri) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        // create a new task for the document to share
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, uri.toString());
+        return shareIntent;
+    }
+
+    private void setUpShareableItem(Uri uri) {
+        Preconditions.checkArgument(uri != null);
+        shareActionProvider.setShareIntent(createShareTrailerIntent(uri));
     }
 
     private void reportSystemError() {
