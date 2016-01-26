@@ -44,8 +44,8 @@ public class MovieListActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ButterKnife.unbind(this);
         super.onDestroy();
+        ButterKnife.unbind(this);
     }
 
     @Override

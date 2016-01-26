@@ -222,6 +222,19 @@ public class MovieDetailFragment extends Fragment {
     }
 
     @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        if (shareableUri == null) {
+            return;
+        }
+
+        // make share menu visible now that shareable uri is available
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+        menuItem.setVisible(true);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.share_menu, menu);
@@ -231,6 +244,19 @@ public class MovieDetailFragment extends Fragment {
 
         // Get the provider and hold onto it to set/change the share intent.
         shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+
+        if (shareableUri == null) {
+            return;
+        }
+        // only create a share intent if shareable uri is available
+        shareActionProvider.setShareIntent(createShareIntent());
+    }
+
+    @Override
+    public void onDestroyOptionsMenu() {
+        super.onDestroyOptionsMenu();
+
+        getActivity().finish();
     }
 
     public void onEventMainThread(MovieDetailsRequestRoutedEvent event) {
@@ -551,7 +577,7 @@ public class MovieDetailFragment extends Fragment {
             // allow for the first trailer to be shared
             if (shareableUri == null) {
                 if (trailers.indexOf(trailer) == 0) {
-                    createShareIntent(trailer.getKey());
+                    setShareableUri(trailer.getKey());
                 }
             }
 
@@ -608,19 +634,22 @@ public class MovieDetailFragment extends Fragment {
         }
     }
 
-    private void createShareIntent(String videoKey) {
-        if (shareActionProvider == null) {
-            Log.w(getClass().getSimpleName(), "share action provider has not been created.");
-            return;
-        }
-        Preconditions.checkArgument(videoKey != null);
-        shareableUri = Uri.parse(YOUTUBE_HTTP_BASE_URL + videoKey);
+    private Intent createShareIntent() {
+        Preconditions.checkState(shareableUri != null);
 
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, shareableUri.toString());
-        shareActionProvider.setShareIntent(shareIntent);
+        return shareIntent;
+    }
+
+    private void setShareableUri(String videoKey) {
+        Preconditions.checkArgument(videoKey != null);
+        shareableUri = Uri.parse(YOUTUBE_HTTP_BASE_URL + videoKey);
+
+        // recreate options menu now that shareable uri is available
+        getActivity().invalidateOptionsMenu();
     }
 
     private void reportSystemError() {
