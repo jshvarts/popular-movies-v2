@@ -52,6 +52,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         if (lastMovieIdViewed != 0) {
             if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                // when returning to landscape dual pane mode, we don't want to use the detail activity to display the movie.
+                // we notify the list activity of the last movie viewed and finish this activity.
                 EventBus.getDefault().postSticky(new MovieDetailsAfterOrientationChangeRequestedEvent(lastMovieIdViewed));
                 finish();
             }
