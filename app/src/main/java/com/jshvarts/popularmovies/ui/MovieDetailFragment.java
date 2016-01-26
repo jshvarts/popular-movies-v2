@@ -221,11 +221,10 @@ public class MovieDetailFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        boolean result = super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.action_share) {
             return true;
         }
-        return result;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
