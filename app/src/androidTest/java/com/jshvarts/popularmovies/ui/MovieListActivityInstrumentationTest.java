@@ -16,6 +16,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -34,11 +35,14 @@ public class MovieListActivityInstrumentationTest {
     public ActivityTestRule<MovieListActivity> activityTestRule = new ActivityTestRule<>(MovieListActivity.class, true, false);
 
     @Test
-    public void movieGridView_isVisible() {
+    public void allViews_correctVisibility() {
         launchActivity();
 
-        onView(withId(R.id.movie_list_gridview))
+        onView(withContentDescription(R.string.title_activity_movie_list))
                 .check(matches(isDisplayed()));
+
+        onView(withId(R.id.progress_bar))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.GONE)));
     }
 
     @Test
