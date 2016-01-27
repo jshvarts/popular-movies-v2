@@ -1,6 +1,7 @@
 <resources>
 
     <string name="app_name">Popular Movies V2</string>
+    <string name="title_activity_movie_list">Movie Grid</string>
     <string name="title_activity_movie_detail">Movie Detail</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_reviews">Reviews</string>
