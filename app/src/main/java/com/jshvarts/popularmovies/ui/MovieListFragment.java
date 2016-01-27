@@ -163,7 +163,7 @@ public class MovieListFragment extends Fragment {
             Cursor c = getActivity().getContentResolver().query(CONTENT_URI, projection, null, null, null);
             if (c.getCount() == 0) {
                 c.close();
-                Log.d(getClass().getSimpleName(), "no favorites for user yet");
+                Log.d(LOG_TAG, "no favorites for user yet");
                 Toast.makeText(getActivity(), NO_FAVORITES_YET, Toast.LENGTH_LONG).show();
                 return;
             }

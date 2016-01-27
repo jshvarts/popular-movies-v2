@@ -486,13 +486,13 @@ public class MovieDetailFragment extends Fragment {
 
         Cursor c = getActivity().getContentResolver().query(CONTENT_URI, projection, selection, selectionArgs, null);
         if (c.getCount() == 0) {
-            Log.d(getClass().getSimpleName(), "movie not favorite: " + movieId);
+            Log.d(LOG_TAG, "movie not favorite: " + movieId);
             toggleFavoriteButton(false);
             c.close();
             return false;
         }
 
-        Log.d(getClass().getSimpleName(), "movie is favorite: " + movieId);
+        Log.d(LOG_TAG, "movie is favorite: " + movieId);
         toggleFavoriteButton(true);
         c.close();
         return true;
